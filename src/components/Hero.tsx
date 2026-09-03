@@ -5,8 +5,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import img from "../../public/heavenHero.jpg";
-import img2 from "../../public/sofa.png";
+import img from "../../public/gall4.webp";
 import AnimatedButton from "./shared/AnimatedButton";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -16,78 +15,63 @@ export default function Hero() {
 
   const headingRef = useRef<HTMLHeadingElement>(null);
 
-  const leftImageWrapRef = useRef<HTMLDivElement>(null);
-  const leftImageRef = useRef<HTMLDivElement>(null);
-
-  const rightImageWrapRef = useRef<HTMLDivElement>(null);
-  const rightImageRef = useRef<HTMLDivElement>(null);
-
+  const bgImageRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       /* =====================================================
-         ENTRANCE (plays once on mount, no ScrollTrigger here)
+         INITIAL STATES
       ===================================================== */
 
-      gsap.set(headingRef.current, { y: 120 });
-
-      gsap.set(leftImageWrapRef.current, {
-        y: 90,
-        clipPath: "inset(100% 0% 0% 0%)",
+      gsap.set(headingRef.current, {
+        y: 120,
       });
 
-      gsap.set(rightImageWrapRef.current, {
-        y: 70,
-        clipPath: "inset(100% 0% 0% 0%)",
+      gsap.set(bgImageRef.current, {
+        scale: 1.12,
       });
 
-      gsap.set(contentRef.current, { y: 50 });
+      gsap.set(contentRef.current, {
+        y: 50,
+      });
 
-      gsap.set(leftImageRef.current, { scale: 1.12 });
-      gsap.set(rightImageRef.current, { scale: 1.1 });
+      /* =====================================================
+         ENTRANCE
+      ===================================================== */
 
       const tl = gsap.timeline({
-        defaults: { ease: "power4.out" },
-        // Wait one tick so layout/images have settled before we
-        // measure anything — avoids the "already visible" snap.
+        defaults: {
+          ease: "power4.out",
+        },
         delay: 0.05,
       });
 
-      tl.to(headingRef.current, { y: 0, duration: 1.1 })
+      tl.to(headingRef.current, {
+        y: 0,
+        duration: 1.1,
+      })
         .to(
-          leftImageWrapRef.current,
-          { y: 0, clipPath: "inset(0% 0% 0% 0%)", duration: 1.15 },
-          "-=0.75"
-        )
-        .to(
-          leftImageRef.current,
-          // Settles at 1.15, not 1 — gives the parallax below room to
-          // translate the image without exposing empty space at the
-          // wrapper's bottom edge.
-          { scale: 1.15, duration: 1.5, ease: "power3.out" },
-          "<"
-        )
-        .to(
-          rightImageWrapRef.current,
-          { y: 0, clipPath: "inset(0% 0% 0% 0%)", duration: 1 },
-          "-=0.85"
-        )
-        .to(
-          rightImageRef.current,
-          { scale: 1, duration: 1.35, ease: "power3.out" },
-          "<"
+          bgImageRef.current,
+          {
+            scale: 1,
+            duration: 1.5,
+            ease: "power3.out",
+          },
+          "-=0.8"
         )
         .to(
           contentRef.current,
-          { y: 0, duration: 0.75, ease: "power3.out" },
+          {
+            y: 0,
+            duration: 0.75,
+            ease: "power3.out",
+          },
           "-=0.55"
         );
 
       /* =====================================================
          SCROLL PARALLAX
-         Single shared ScrollTrigger driving one timeline —
-         avoids multiple independent scrubs fighting each other.
       ===================================================== */
 
       const scrollTl = gsap.timeline({
@@ -101,41 +85,31 @@ export default function Hero() {
       });
 
       scrollTl
-        .to(headingRef.current, { y: -70, ease: "none" }, 0)
-        .to(contentRef.current, { y: -35, ease: "none" }, 0)
-        .to(rightImageRef.current, { yPercent: -8, ease: "none" }, 0);
-
-      /* =====================================================
-         LEFT IMAGE — dedicated parallax
-         Tied to the image's OWN viewport journey (not the section's),
-         so it keeps drifting the whole time it's on screen — this is
-         what makes a parallax read as a parallax instead of a small
-         nudge tied to the hero's limited scroll range.
-      ===================================================== */
-
-      gsap.to(leftImageRef.current, {
-        yPercent: -20,
-        ease: "none",
-        scrollTrigger: {
-          trigger: leftImageWrapRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      // Note: no Hero pin here anymore — see BrandIntro.tsx for how
-      // the small bottom-edge overlap with the next section works.
-      // Pinning the whole Hero for a full viewport of scroll (what
-      // was here before) is what made it feel like the entire hero
-      // was "taken over" instead of just its bottom edge peeking
-      // under the next section, like in the reference video.
-
-      // No manual ScrollTrigger.refresh() here — GSAP handles the
-      // initial refresh itself once fonts/images are ready. Calling
-      // it manually right after setup is what was causing the
-      // instant-snap-to-final-state you saw in the recording.
+        .to(
+          headingRef.current,
+          {
+            y: -70,
+            ease: "none",
+          },
+          0
+        )
+        .to(
+          contentRef.current,
+          {
+            y: -35,
+            ease: "none",
+          },
+          0
+        )
+        .to(
+          bgImageRef.current,
+          {
+            yPercent: -10,
+            scale: 1.06,
+            ease: "none",
+          },
+          0
+        );
     }, sectionRef);
 
     return () => ctx.revert();
@@ -144,58 +118,75 @@ export default function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="min-h-screen bg-cover bg-center bg-no-repeat px-20 pt-40"
+      className="relative min-h-screen overflow-hidden px-20 pt-40 text-white"
     >
-      <div className="flex">
-        <div>
+      {/* =====================================================
+          FULL BACKGROUND IMAGE
+      ===================================================== */}
+
+      <div
+        ref={bgImageRef}
+        className="absolute inset-[-6%] z-0 will-change-transform"
+      >
+        <Image
+          src={img}
+          alt="Luxury furniture interior"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+      </div>
+
+      {/* =====================================================
+          DARK OVERLAY
+      ===================================================== */}
+
+      <div className="absolute inset-0 z-10 bg-black/40" />
+
+      {/* =====================================================
+          BOTTOM GRADIENT
+      ===================================================== */}
+
+      <div className="absolute inset-x-0 bottom-0 z-10 h-[45%] bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
+
+      {/* =====================================================
+          ORIGINAL CONTENT LAYOUT
+      ===================================================== */}
+
+      <div className="relative z-20 flex">
+        {/* ===================================================
+            LEFT SIDE
+        =================================================== */}
+
+        <div className="flex flex-col justify-center">
           <h1
             ref={headingRef}
-            className="text-[160px] font-bold uppercase tracking-normal leading-36 text-[#171715]"
+            className="text-[160px] font-bold uppercase leading-36 tracking-normal text-white"
           >
             Elevate the way you live.
           </h1>
-
-          <div ref={leftImageWrapRef} className="mt-7 overflow-hidden">
-            <div ref={leftImageRef} className="will-change-transform">
-              <Image
-                alt="hero1"
-                src={img}
-                width={600}
-                height={300}
-                priority
-                className="mt-0 w-[900px] h-[400px] bg-cover bg-center"
-              />
-            </div>
-          </div>
         </div>
 
+        {/* ===================================================
+            RIGHT SIDE
+        =================================================== */}
+
         <div>
-          <div ref={rightImageWrapRef} className="overflow-visible">
-            <div ref={rightImageRef} className="will-change-transform">
-              <Image
-                alt="chair"
-                src={img2}
-                width={300}
-                height={400}
-                priority
-                // Transparent PNG cutout — object-contain keeps the
-                // chair's real proportions instead of stretching it
-                // into a box, and no bg-cover since there's no photo
-                // background to fill. Drop-shadow adds a bit of
-                // grounding since it'll sit directly on the page bg.
-                className="w-[420px] h-auto object-contain drop-shadow-2xl"
-              />
-            </div>
-          </div>
+          {/* Keeps the original right-side spacing */}
+          <div className="h-[400px] w-[420px]" />
 
           <div ref={contentRef}>
-            <p className="text-[20px] w-[500px] font-medium my-5">
+            <p className="my-5 w-[500px] text-[20px] font-medium leading-[1.35] text-white">
               Bespoke furniture for living, bedroom, dining, office, and
               every space in between — designed around your taste, space,
               and lifestyle.
             </p>
 
-            <AnimatedButton href="/" text="Explore The Collection" />
+            <AnimatedButton
+              href="/"
+              text="Explore The Collection"
+            />
           </div>
         </div>
       </div>

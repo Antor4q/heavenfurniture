@@ -1,316 +1,526 @@
 "use client";
 
-import Link from "next/link";
 import { useLayoutEffect, useRef } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import AnimatedButton from "./shared/AnimatedButton";
 
 gsap.registerPlugin(ScrollTrigger);
 
 type Collection = {
-  name: string;
+  number: string;
+  title: string;
+  eyebrow: string;
   description: string;
   image: string;
-  href: string;
+  accent: string;
 };
 
 const collections: Collection[] = [
   {
-    name: "Living Room",
-    description: "Sofas, coffee tables, TV units and consoles.",
+    number: "01",
+    title: "LIVING ROOM",
+    eyebrow: "CRAFTED FOR GATHERING",
+    description:
+      "Refined silhouettes, tactile materials, and considered proportions made for everyday living.",
     image: "/heavenHero.jpg",
-    href: "/collections/living-room",
+    accent: "#34494A",
   },
   {
-    name: "Bedroom",
-    description: "Beds, wardrobes, dressing tables and bedside tables.",
+    number: "02",
+    title: "BEDROOM",
+    eyebrow: "MADE FOR REST",
+    description:
+      "Quiet forms and natural textures designed to bring warmth, comfort, and calm into your space.",
     image: "/heavenHero.jpg",
-    href: "/collections/bedroom",
+    accent: "#34494A",
   },
   {
-    name: "Dining",
-    description: "Dining tables, dining chairs and cabinets.",
+    number: "03",
+    title: "DINING",
+    eyebrow: "DESIGNED TO CONNECT",
+    description:
+      "Timeless dining pieces created around long conversations, shared meals, and meaningful moments.",
     image: "/heavenHero.jpg",
-    href: "/collections/dining",
+    accent: "#34494A",
   },
-
   {
-    name: "Bespoke / Custom",
-    description: "Built to your own space, size and taste.",
+    number: "04",
+    title: "BESPOKE",
+    eyebrow: "TAILORED TO YOU",
+    description:
+      "Made-to-measure furniture where craftsmanship, material, and proportion come together.",
     image: "/heavenHero.jpg",
-    href: "/collections/bespoke",
+    accent: "#34494A",
   },
 ];
 
-/* =====================================================
-   COLLECTION CARD — the whole card is the link.
-   Hovering anywhere on it triggers the CTA swap-text
-   animation (refs live here now, not on a separate Link).
-===================================================== */
-
-function CollectionCard({ item }: { item: Collection }) {
-  const ctaDefaultRef = useRef<HTMLSpanElement>(null);
-  const ctaHoverRef = useRef<HTMLSpanElement>(null);
-
-  const handleMouseEnter = () => {
-    const ctaDefault = ctaDefaultRef.current;
-    const ctaHover = ctaHoverRef.current;
-    if (!ctaDefault || !ctaHover) return;
-
-    gsap.killTweensOf([ctaDefault, ctaHover]);
-
-    gsap.to(ctaDefault, { x: 20, opacity: 0, duration: 0.4, ease: "power3.out" });
-    gsap.fromTo(
-      ctaHover,
-      { x: -20, opacity: 0 },
-      { x: 0, opacity: 1, duration: 0.45, ease: "power3.out" }
-    );
-  };
-
-  const handleMouseLeave = () => {
-    const ctaDefault = ctaDefaultRef.current;
-    const ctaHover = ctaHoverRef.current;
-    if (!ctaDefault || !ctaHover) return;
-
-    gsap.killTweensOf([ctaDefault, ctaHover]);
-
-    gsap.to(ctaHover, { x: -20, opacity: 0, duration: 0.35, ease: "power3.inOut" });
-    gsap.to(ctaDefault, { x: 0, opacity: 1, duration: 0.4, ease: "power3.inOut" });
-  };
-
-  return (
-    <Link
-      href={item.href}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      className="collection-card group relative block aspect-[4/5] overflow-hidden bg-[#171715] md:aspect-auto md:h-[560px]"
-    >
-      <div className="collection-image absolute inset-0 h-full w-full overflow-hidden will-change-transform">
-        <div className="collection-image-inner absolute inset-x-0 -inset-y-[15%] will-change-transform">
-          <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
-        </div>
-        <div className="absolute inset-0 bg-black/15 transition-colors duration-500 group-hover:bg-black/35" />
-      </div>
-
-      <div className="collection-curtain absolute inset-0 z-10 bg-[#F7F5F1] will-change-transform" />
-
-      <div className="collection-caption absolute bottom-0 left-0 right-0 z-20 flex flex-col gap-3 p-6 md:p-7">
-        <div>
-          <h3 className="text-[24px] font-bold uppercase leading-none tracking-[-0.02em] text-white md:text-[28px]">
-            {item.name}
-          </h3>
-          <p className="mt-2 max-w-[30ch] text-[13px] leading-snug text-white/75 md:text-[14px]">
-            {item.description}
-          </p>
-        </div>
-
-        {/* CTA — no longer its own Link (the whole card already is one);
-            hover state is driven by the card's onMouseEnter/onMouseLeave above */}
-        <span className="relative inline-flex h-6 items-center overflow-hidden">
-          <span ref={ctaDefaultRef} className="absolute inline-flex items-center gap-3">
-            <span className="whitespace-nowrap text-[13px] font-semibold uppercase tracking-[0.04em] text-white">
-              Explore
-            </span>
-            <span className="text-[15px] leading-none text-white">⟶</span>
-          </span>
-
-          <span ref={ctaHoverRef} className="absolute inline-flex items-center gap-3 opacity-0">
-            <span className="text-[15px] leading-none text-[#D9A441]">⟶</span>
-            <span className="whitespace-nowrap text-[13px] font-semibold uppercase tracking-[0.04em] text-[#D9A441]">
-              Explore
-            </span>
-          </span>
-        </span>
-      </div>
-    </Link>
-  );
-}
-
 export default function Collections() {
   const sectionRef = useRef<HTMLElement>(null);
-  const labelRef = useRef<HTMLSpanElement>(null);
-  const headingRef = useRef<HTMLHeadingElement>(null);
 
   useLayoutEffect(() => {
+    const section = sectionRef.current;
+
+    if (!section) return;
+
     const ctx = gsap.context(() => {
-      const section = sectionRef.current;
-      const label = labelRef.current;
-      const heading = headingRef.current;
-      if (!section || !label || !heading) return;
+      const cards = gsap.utils.toArray<HTMLElement>(".collection-card");
 
-      /* ---- heading entrance (same device as BrandIntro) ---- */
-      gsap.set(label, { y: 30, opacity: 0 });
-      gsap.set(heading, { y: 30, opacity: 0 });
+      const isMobile = window.innerWidth < 768;
 
-      gsap.to(label, {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: section,
-          start: "top 85%",
-          toggleActions: "play none none reverse",
-        },
-      });
+      cards.forEach((card) => {
+        const image = card.querySelector<HTMLElement>(
+          ".collection-image"
+        );
 
-      gsap.to(heading, {
-        y: 0,
-        opacity: 1,
-        duration: 0.9,
-        delay: 0.1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: section,
-          start: "top 85%",
-          toggleActions: "play none none reverse",
-        },
-      });
+        const imageWrap = card.querySelector<HTMLElement>(
+          ".collection-image-wrap"
+        );
 
-      /* ---- continued parallax on label + heading while scrolling
-             (same device as BrandIntro's label/paragraph parallax) ---- */
-      gsap.to(label, {
-        y: -18,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1.2,
-          invalidateOnRefresh: true,
-        },
-      });
+        const hoverPanel = card.querySelector<HTMLElement>(
+          ".collection-hover-panel"
+        );
 
-      gsap.to(heading, {
-        y: -34,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1.4,
-          invalidateOnRefresh: true,
-        },
-      });
+        const hoverContent = card.querySelector<HTMLElement>(
+          ".collection-hover-content"
+        );
 
-      /* ---- cards ---- */
-      const cards = section.querySelectorAll<HTMLElement>(".collection-card");
+        if (!image || !imageWrap || !hoverPanel || !hoverContent) return;
 
-      cards.forEach((card, index) => {
-        const imageWrap = card.querySelector<HTMLElement>(".collection-image");
-        const imageInner = card.querySelector<HTMLElement>(".collection-image-inner");
-        const curtain = card.querySelector<HTMLElement>(".collection-curtain");
-        const caption = card.querySelector<HTMLElement>(".collection-caption");
+        /*
+        |--------------------------------------------------------------------------
+        | INITIAL CARD WIDTH
+        |--------------------------------------------------------------------------
+        |
+        | Important:
+        | The parent wrapper already has px-20 on desktop.
+        |
+        | So we DON'T add margin-left/right here.
+        |
+        | Card starts narrower and expands to width: 100%.
+        |
+        */
 
-        if (!imageWrap || !imageInner || !curtain || !caption) return;
+        gsap.set(card, {
+          width: isMobile
+            ? "calc(100% - 60px)"
+            : "calc(100% - 220px)",
+          marginLeft: "auto",
+          marginRight: "auto",
+        });
 
-        gsap.set(imageWrap, { scale: 1.15 });
-        gsap.set(caption, { y: 16, opacity: 0 });
+        /*
+        |--------------------------------------------------------------------------
+        | CARD WIDTH EXPANSION
+        |--------------------------------------------------------------------------
+        |
+        | Final width = 100% of the px-20 container.
+        |
+        | Therefore final viewport spacing is exactly:
+        |
+        | 80px left
+        | 80px right
+        |
+        | No additional 80px margin.
+        |
+        */
 
-        const tl = gsap.timeline({
+        gsap.to(card, {
+          width: "100%",
+          ease: "none",
           scrollTrigger: {
             trigger: card,
-            start: "top 82%",
-            toggleActions: "play none none reverse",
+            start: "top 92%",
+            end: "top 42%",
+            scrub: 1.2,
           },
         });
 
-        tl.to(curtain, {
-          scaleX: 0,
-          transformOrigin: "right center",
-          duration: 1.1,
-          ease: "power4.inOut",
-        })
-          .to(imageWrap, { scale: 1, duration: 1.4, ease: "power3.out" }, 0)
-          .to(caption, { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" }, "-=0.5");
+        /*
+        |--------------------------------------------------------------------------
+        | IMAGE PARALLAX
+        |--------------------------------------------------------------------------
+        */
 
         gsap.fromTo(
-          imageInner,
-          { yPercent: -12 },
+          image,
           {
-            yPercent: 12,
+            scale: 1.14,
+            yPercent: 8,
+          },
+          {
+            scale: 1,
+            yPercent: -5,
             ease: "none",
             scrollTrigger: {
               trigger: card,
               start: "top bottom",
               end: "bottom top",
-              scrub: true,
-              invalidateOnRefresh: true,
+              scrub: 1.2,
             },
           }
         );
 
-        /* ---- card itself drifts as you scroll — left column and
-               right column move at slightly different rates, so the
-               grid gains depth instead of moving as one flat block ---- */
-        const isLeftColumn = index % 2 === 0;
+        /*
+        |--------------------------------------------------------------------------
+        | IMAGE MASK REVEAL
+        |--------------------------------------------------------------------------
+        */
+
         gsap.fromTo(
-          card,
-          { y: isLeftColumn ? 30 : 55 },
+          imageWrap,
           {
-            y: isLeftColumn ? -30 : -55,
+            clipPath: "inset(5% 0% 5% 0%)",
+          },
+          {
+            clipPath: "inset(0% 0% 0% 0%)",
             ease: "none",
             scrollTrigger: {
               trigger: card,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 1,
-              invalidateOnRefresh: true,
+              start: "top 95%",
+              end: "top 45%",
+              scrub: 1.2,
             },
           }
         );
+
+        /*
+        |--------------------------------------------------------------------------
+        | HOVER PANEL INITIAL STATE
+        |--------------------------------------------------------------------------
+        */
+
+        gsap.set(hoverPanel, {
+          yPercent: 100,
+        });
+
+        gsap.set(hoverContent, {
+          y: 35,
+          opacity: 0,
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | HOVER ANIMATION
+        |--------------------------------------------------------------------------
+        */
+
+        const enter = () => {
+          gsap.killTweensOf([hoverPanel, hoverContent]);
+
+          gsap.to(hoverPanel, {
+            yPercent: 0,
+            duration: 0.65,
+            ease: "power3.out",
+          });
+
+          gsap.to(hoverContent, {
+            y: 0,
+            opacity: 1,
+            duration: 0.55,
+            delay: 0.08,
+            ease: "power3.out",
+          });
+        };
+
+        const leave = () => {
+          gsap.killTweensOf([hoverPanel, hoverContent]);
+
+          gsap.to(hoverContent, {
+            y: 35,
+            opacity: 0,
+            duration: 0.3,
+            ease: "power2.in",
+          });
+
+          gsap.to(hoverPanel, {
+            yPercent: 100,
+            duration: 0.5,
+            delay: 0.04,
+            ease: "power3.inOut",
+          });
+        };
+
+        imageWrap.addEventListener("mouseenter", enter);
+        imageWrap.addEventListener("mouseleave", leave);
+
+        /*
+        |--------------------------------------------------------------------------
+        | CLEANUP
+        |--------------------------------------------------------------------------
+        */
+
+        return () => {
+          imageWrap.removeEventListener("mouseenter", enter);
+          imageWrap.removeEventListener("mouseleave", leave);
+        };
       });
-    }, sectionRef);
 
-    return () => ctx.revert();
+      /*
+      |--------------------------------------------------------------------------
+      | REFRESH SCROLLTRIGGER
+      |--------------------------------------------------------------------------
+      */
+
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
+    }, section);
+
+    return () => {
+      ctx.revert();
+    };
   }, []);
 
   return (
     <section
       ref={sectionRef}
-      className="
-        relative
-        z-10
-        bg-[#F7F5F1]
-        px-8
-        pb-24
-        md:px-12
-        md:pb-28
-        lg:px-20
-        lg:pb-32
-      "
+      className="relative overflow-hidden bg-[#111111] py-28"
     >
-      {/* Section heading */}
-      <div className="mb-14 md:mb-16">
-        <span
-          ref={labelRef}
-          className="mb-6 block text-[20px] font-semibold uppercase text-[#8A837A]"
-        >
-          Our Collections
-        </span>
+      {/* ================================================================
+          HEADER
+      ================================================================= */}
 
-        <h2
-          ref={headingRef}
-          className="
-            w-full
-            max-w-[1200px]
-            text-[110px]
-            font-bold
-            uppercase
-            leading-[1.08]
-            tracking-[-0.03em]
-            text-[#171715]
-          "
-        >
-          Every room, furnished around
-        </h2>
+      <div className="w-full px-5 md:px-20">
+        <div className="w-full">
+          <span
+            className="
+               mb-5
+          block
+          text-[14px]
+          font-semibold
+          uppercase
+          tracking-[0.08em]
+          text-[#B79B67]
+          md:text-[16px]
+          lg:text-[18px]
+            "
+          >
+            Why Customers Choose Them
+          </span>
+
+          <h2
+            className="
+              w-full
+              max-w-[1200px]
+              text-[54px]
+              font-bold
+              uppercase
+              leading-[1.08]
+              tracking-[-0.03em]
+              text-[#F7F5F1]
+              md:text-[76px]
+              lg:text-[110px]
+            "
+          >
+            Built around what matters
+          </h2>
+        </div>
       </div>
 
-      {/* Cards — two per row, all five the same size */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-5">
-        {collections.map((item) => (
-          <CollectionCard key={item.name} item={item} />
-        ))}
+      {/* ================================================================
+          COLLECTION CARDS
+      ================================================================= */}
+
+      <div className="mt-24 w-full px-5 md:px-20">
+        <div className="flex flex-col gap-10">
+          {collections.map((collection) => (
+            <article
+              key={collection.number}
+              className="
+                collection-card
+                relative
+                mx-auto
+                w-full
+              "
+            >
+              {/* ========================================================
+                  IMAGE CARD
+              ========================================================= */}
+
+              <div
+                className="
+                  collection-image-wrap
+                  group
+                  relative
+                  h-[58vh]
+                  min-h-[430px]
+                  w-full
+                  overflow-hidden
+                  bg-[#493B35]
+                  md:h-[64vh]
+                  lg:h-[72vh]
+                  lg:min-h-[580px]
+                "
+              >
+                {/* ======================================================
+                    IMAGE
+                ======================================================= */}
+
+                <div className="absolute inset-0 overflow-hidden">
+                  <Image
+                    src={collection.image}
+                    alt={collection.title}
+                    fill
+                    className="
+                      collection-image
+                      object-cover
+                      will-change-transform
+                    "
+                    sizes="(max-width: 768px) 100vw, 80vw"
+                  />
+                </div>
+
+                {/* ======================================================
+                    DARK IMAGE OVERLAY
+                ======================================================= */}
+
+                <div
+                  className="
+                    pointer-events-none
+                    absolute
+                    inset-0
+                    bg-gradient-to-t
+                    from-black/55
+                    via-black/10
+                    to-transparent
+                  "
+                />
+
+                {/* ======================================================
+                    DEFAULT CARD CONTENT
+                ======================================================= */}
+
+                <div
+                  className="
+                    pointer-events-none
+                    absolute
+                    inset-x-0
+                    bottom-0
+                    z-10
+                    flex
+                    items-end
+                    justify-between
+                    p-6
+                    md:p-10
+                    lg:p-12
+                  "
+                >
+                  <div>
+                   
+
+                    <h3
+                      className="
+                        text-[38px]
+                        font-semibold
+                        leading-none
+                        tracking-[-0.03em]
+                        text-white
+                        md:text-[56px]
+                        lg:text-[72px]
+                      "
+                    >
+                      {collection.title}
+                    </h3>
+                  </div>
+
+                 {/* if */}
+                </div>
+
+                {/* ======================================================
+                    HOVER PANEL
+                    INSIDE IMAGE
+                ======================================================= */}
+
+                <div
+                  className="
+                    collection-hover-panel
+                    absolute
+                    inset-x-0
+                    bottom-0
+                    z-20
+                    min-h-[42%]
+                    overflow-hidden
+                    will-change-transform
+                  "
+                  style={{
+                    backgroundColor: collection.accent,
+                  }}
+                >
+                  <div
+                    className="
+                      collection-hover-content
+                      flex
+                      h-full
+                      min-h-[260px]
+                      flex-col
+                      justify-between
+                      p-6
+                      md:min-h-[280px]
+                      md:p-10
+                      lg:min-h-[320px]
+                      lg:p-12
+                    "
+                  >
+                    {/* TOP */}
+
+                    <div className="flex items-start justify-between gap-8">
+                      <span className="text-[12px] font-medium uppercase tracking-[0.18em] text-white/65">
+                        {collection.eyebrow}
+                      </span>
+
+                     
+                    </div>
+
+                    {/* BOTTOM */}
+
+                    <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+                      <div className="max-w-[720px]">
+                        <h3
+                          className="
+                            text-[42px]
+                            font-semibold
+                            uppercase
+                            leading-[0.95]
+                            tracking-[-0.035em]
+                            text-[#F7F5F1]
+                            md:text-[58px]
+                            lg:text-[76px]
+                          "
+                        >
+                          {collection.title}
+                        </h3>
+
+                        <p
+                          className="
+                            mt-5
+                            max-w-[580px]
+                            text-[15px]
+                          
+                          
+                            md:text-[18px]
+                            font-medium leading-[1.35] text-[#F7F5F1]
+                          "
+                        >
+                          {collection.description}
+                        </p>
+                      </div>
+
+                      {/* ARROW / LINK */}
+
+                     <AnimatedButton
+              href="/"
+              text="Explore The Collection"
+            />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );
