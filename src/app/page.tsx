@@ -1,6 +1,7 @@
 
 import Bespoke from "@/components/Bespoke";
 import BespokeMaterialShowcase from "@/components/Bespokematerial";
+import Blogs from "@/components/Blogs";
 import Brand from "@/components/Brand";
 import BrandIntro from "@/components/Brandintro";
 import CTA from "@/components/CallToAction";
@@ -19,16 +20,17 @@ export default function Home() {
     <main>
      
       <Hero />
-      {/* <BrandIntro/> */}
+     
       <Brand/>
       <GallerySection/>
       <Collections/>
-      <WhyChooseHeaven/>
       <Bespoke/>
+      <WhyChooseHeaven/>
       {/* <BespokeMaterialShowcase/> */}
       <SocialProof/>
       <Quote/>
       <Milestones/>
+      <Blogs/>
       <CTA/>
       {/* <Bespoke/> */}
     </main>

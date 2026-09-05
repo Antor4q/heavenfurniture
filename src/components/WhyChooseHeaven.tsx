@@ -112,6 +112,7 @@ export default function WhyChooseHeaven() {
       id="why-customers-choose-them"
       className="
         w-full
+        overflow-hidden
         bg-[#F4F2ED]
         px-6
         py-24
@@ -125,28 +126,36 @@ export default function WhyChooseHeaven() {
       ========================================== */}
 
       <div className="w-full">
-       
-         
-          <span
-            className="
-             mb-5
-          block
-          text-[14px]
-          font-semibold
-          uppercase
-          tracking-[0.08em]
-          text-[#B79B67]
-          md:text-[16px]
-          lg:text-[18px]
-            "
-          >
-            Why Customers Choose Us
-          </span>
-       
+        <span
+          className="
+            mb-5
+            block
+            text-[14px]
+            font-semibold
+            uppercase
+            tracking-[0.08em]
+            text-[#B79B67]
+            md:text-[16px]
+            lg:text-[18px]
+          "
+        >
+          Why Customers Choose Us
+        </span>
 
         <h2
           className="
-          mt-5  text-[clamp(52px,7vw,110px)] font-bold uppercase leading-[0.88] tracking-[-0.055em] text-[#171715]
+            mt-5
+            break-words
+            text-[clamp(34px,10vw,110px)]
+            font-bold
+            uppercase
+            leading-[0.95]
+            tracking-[-0.03em]
+            text-[#171715]
+            sm:leading-[0.9]
+            md:text-[clamp(52px,7vw,110px)]
+            md:leading-[0.88]
+            md:tracking-[-0.055em]
           "
         >
           Built around
@@ -191,20 +200,21 @@ export default function WhyChooseHeaven() {
                   flex
                   w-full
                   items-start
-                  gap-4
+                  gap-3
                   border-b
                   border-[#171715]/10
-                  py-7
+                  py-6
                   text-left
                   outline-none
                   first:border-t
+                  sm:gap-4
                   md:py-8
 
                   transition-transform
                   duration-200
                   ease-out
 
-                  ${isActive ? "translate-x-4" : "translate-x-0"}
+                  ${isActive ? "translate-x-2 md:translate-x-4" : "translate-x-0"}
                 `}
               >
                 {/* ACTIVE DOT */}
@@ -228,15 +238,17 @@ export default function WhyChooseHeaven() {
                 <span
                   className={`
                     mt-1
-                    w-[36px]
+                    w-[30px]
                     shrink-0
                     font-sans
-                    text-[13px]
+                    text-[12px]
                     tracking-[0.1em]
                     font-semibold
                     transition-colors
                     duration-150
 
+                    sm:w-[36px]
+                    sm:text-[13px]
                     md:text-[16px]
 
                     ${isActive ? "text-[#C9A227]" : "text-[#AAA49B]"}
@@ -250,15 +262,19 @@ export default function WhyChooseHeaven() {
                 <span
                   className={`
                     max-w-[500px]
-                    text-[22px]
+                    break-words
+                    text-[19px]
                     font-sans
                     uppercase
-                    leading-[1.1]
-                    tracking-[-0.02em]
+                    leading-[1.15]
+                    tracking-[-0.015em]
 
                     transition-colors
                     duration-150
                     font-bold
+                    sm:text-[22px]
+                    sm:leading-[1.1]
+                    sm:tracking-[-0.02em]
                     md:text-[27px]
                     lg:text-[30px]
 
@@ -284,10 +300,11 @@ export default function WhyChooseHeaven() {
           <div
             className="
               relative
-              h-[360px]
+              h-[280px]
               w-full
               overflow-hidden
               bg-[#DDD9D1]
+              sm:h-[360px]
               md:h-[440px]
               lg:h-[500px]
             "
@@ -330,8 +347,6 @@ export default function WhyChooseHeaven() {
             </div>
 
             {/* GOLD CORNER ACCENT — number tag, echoes Collections card meta */}
-
-           
           </div>
 
           {/* =====================================
@@ -339,21 +354,21 @@ export default function WhyChooseHeaven() {
           ====================================== */}
 
           <div ref={contentRef} className="mt-8 w-full md:mt-10">
-           
-
-            
-
             {/* DESCRIPTION */}
 
             <p
               className="
                 max-w-[760px]
-                text-[24px]
+                break-words
+                text-[19px]
                 font-medium
-                fonst-sans
-                leading-[1.35]
-                tracking-[-0.02em]
+                font-sans
+                leading-[1.4]
+                tracking-[-0.01em]
                 text-[#171715]
+                sm:text-[24px]
+                sm:leading-[1.35]
+                sm:tracking-[-0.02em]
                 md:text-[29px]
                 lg:text-[32px]
               "
@@ -371,10 +386,9 @@ export default function WhyChooseHeaven() {
                 border-[#171715]/10
                 pt-6
                 text-[13px]
-            
                 leading-[1.8]
                 text-[#413f3e]
-                font-medium 
+                font-medium
                 font-sans
                 md:text-[16px]
               "

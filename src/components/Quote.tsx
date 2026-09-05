@@ -13,7 +13,8 @@ export default function Quote() {
   const quoteMarkRef = useRef<HTMLDivElement>(null);
   const quoteRef = useRef<HTMLDivElement>(null);
   const authorRef = useRef<HTMLDivElement>(null);
-  const lineRef = useRef<HTMLDivElement>(null);
+  const lineDesktopRef = useRef<HTMLDivElement>(null);
+  const lineMobileRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
 
   useLayoutEffect(() => {
@@ -38,12 +39,18 @@ export default function Quote() {
         { y: 60, ease: "none", scrollTrigger: scrollConfig }
       );
 
-      // TOP LINE — subtle horizontal drift as it scrolls past
-      gsap.fromTo(
-        lineRef.current,
-        { xPercent: -6 },
-        { xPercent: 6, ease: "none", scrollTrigger: scrollConfig }
+      // TOP LINE (desktop + mobile) — subtle horizontal drift as it scrolls past
+      const lines = [lineDesktopRef.current, lineMobileRef.current].filter(
+        Boolean
       );
+
+      if (lines.length) {
+        gsap.fromTo(
+          lines,
+          { xPercent: -6 },
+          { xPercent: 6, ease: "none", scrollTrigger: scrollConfig }
+        );
+      }
 
       // LABEL CHIP — light vertical drift, opposite-ish direction
       gsap.fromTo(
@@ -85,33 +92,32 @@ export default function Quote() {
         overflow-hidden
         bg-[#171715]
         px-6
-        py-24
+        py-14
         text-[#F7F5F1]
+        sm:py-16
         md:px-10
-        md:py-32
+        md:py-24
         lg:px-16
-        lg:py-36
+        lg:py-32
         xl:px-20
       "
     >
-    
-
       <div className="relative mx-auto max-w-[1500px]">
-
         {/* =====================================================
             TOP STRUCTURE
         ===================================================== */}
 
         <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr]">
-
           {/* PORTRAIT */}
           <div
             ref={imageRef}
             className="
               relative
-              h-[210px]
-              w-[180px]
+              h-[170px]
+              w-[145px]
               overflow-hidden
+              sm:h-[210px]
+              sm:w-[180px]
               md:h-[235px]
               md:w-[205px]
               lg:h-[230px]
@@ -122,7 +128,7 @@ export default function Quote() {
               src="/gall3.webp"
               alt="Abul Kalam Bhuiyan, Managing Director"
               fill
-              sizes="220px"
+              sizes="(max-width: 640px) 145px, (max-width: 768px) 180px, 220px"
               className="
                 object-cover
                 grayscale
@@ -132,15 +138,12 @@ export default function Quote() {
                 hover:grayscale-0
               "
             />
-
-          
           </div>
 
-          {/* TOP LINE + LABEL */}
+          {/* TOP LINE + LABEL (desktop) */}
           <div className="hidden lg:block">
-
             <div
-              ref={lineRef}
+              ref={lineDesktopRef}
               className="
                 mt-0
                 h-px
@@ -171,13 +174,14 @@ export default function Quote() {
 
         {/* MOBILE TOP LINE */}
         <div
-          ref={lineRef}
+          ref={lineMobileRef}
           className="
-            mt-8
+            mt-6
             h-px
             w-full
             origin-left
             bg-[#F7F5F1]/25
+            sm:mt-8
             lg:hidden
           "
         />
@@ -188,8 +192,9 @@ export default function Quote() {
 
         <div
           className="
-            mt-16
+            mt-10
             ml-0
+            sm:mt-16
             md:mt-20
             md:ml-[12%]
             lg:mt-[-55px]
@@ -201,11 +206,13 @@ export default function Quote() {
           <div
             ref={quoteMarkRef}
             className="
-              mb-7
+              mb-5
               font-serif
-              text-[68px]
+              text-[48px]
               leading-[0.55]
               text-[#B79B67]
+              sm:mb-7
+              sm:text-[68px]
               md:text-[78px]
             "
           >
@@ -221,10 +228,14 @@ export default function Quote() {
           >
             <blockquote
               className="
-                text-[clamp(30px,3.45vw,58px)]
+                break-words
+                text-[clamp(24px,6.5vw,58px)]
                 font-medium
-                leading-[1.08]
-                tracking-[-0.038em]
+                leading-[1.15]
+                tracking-[-0.02em]
+                sm:text-[clamp(30px,3.45vw,58px)]
+                sm:leading-[1.08]
+                sm:tracking-[-0.038em]
               "
             >
               <span className="text-[#F7F5F1]">
@@ -243,10 +254,11 @@ export default function Quote() {
             <div
               ref={authorRef}
               className="
-                mt-10
+                mt-8
                 flex
                 flex-col
                 gap-1
+                sm:mt-10
                 md:mt-12
                 md:flex-row
                 md:items-center
@@ -297,10 +309,11 @@ export default function Quote() {
 
         <div
           className="
-            mt-20
+            mt-14
             flex
             items-center
             gap-5
+            sm:mt-20
             md:mt-28
             lg:mt-32
           "

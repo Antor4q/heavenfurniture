@@ -1,14 +1,10 @@
 "use client";
 
-import Image from "next/image";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import image2020 from "../../public/heavenHero.jpg";
-import image2021 from "../../public/heavenHero.jpg";
-import image2024 from "../../public/heavenHero.jpg";
-import image2025 from "../../public/heavenHero.jpg";
-import image2026 from "../../public/heavenHero.jpg";
+gsap.registerPlugin(ScrollTrigger);
 
 const milestones = [
   {
@@ -16,218 +12,170 @@ const milestones = [
     title: "The Beginning",
     description:
       "Heaven Furniture Mart was founded by Abul Kalam Bhuiyan with a vision to bring timeless furniture and refined living spaces to Chattogram.",
-    image: image2020,
   },
   {
     year: "2021",
     title: "A Place to Experience",
     description:
       "The Agrabad showroom opened its doors, giving clients a dedicated space to experience our furniture, materials, and craftsmanship.",
-    image: image2021,
   },
   {
     year: "2024–25",
     title: "International Furniture Fair",
     description:
       "Heaven Furniture Mart exhibited at the International Furniture Fair, Chattogram, connecting our work with a wider furniture community.",
-    image: image2024,
   },
   {
     year: "2025",
     title: "Growing Recognition",
     description:
       "Heaven Furniture Mart became a member of the Chamber of Commerce, marking another step in our journey as a growing furniture brand.",
-    image: image2025,
   },
   {
     year: "2026",
     title: "A New Milestone",
     description:
       "Received nationwide BFIOA recognition, reflecting the continued growth and presence of Heaven Furniture Mart.",
-    image: image2026,
   },
 ];
 
 export default function Milestones() {
-  const contentRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-  const imageInnerRef = useRef<HTMLDivElement>(null);
-
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const activeIndexRef = useRef(0);
-  const isAnimatingRef = useRef(false);
-
-  /*
-   * -------------------------------------------------------
-   * INITIAL STATE
-   * -------------------------------------------------------
-   */
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const headingRef = useRef<HTMLDivElement | null>(null);
+  const cardsRef = useRef<HTMLDivElement | null>(null);
 
   useLayoutEffect(() => {
-    const content = contentRef.current;
-    const image = imageRef.current;
-    const imageInner = imageInnerRef.current;
-
-    if (!content || !image || !imageInner) return;
-
-    gsap.set(content, {
-      y: 0,
-      opacity: 1,
-    });
-
-    gsap.set(image, {
-      opacity: 1,
-      clipPath: "inset(0% 0% 0% 0%)",
-    });
-
-    gsap.set(imageInner, {
-      scale: 1,
-      yPercent: 0,
-    });
-  }, []);
-
-  /*
-   * -------------------------------------------------------
-   * CHANGE ACTIVE MILESTONE
-   * -------------------------------------------------------
-   */
-
-  const changeMilestone = (index: number) => {
-    if (index === activeIndexRef.current) return;
-    if (isAnimatingRef.current) return;
-
-    const content = contentRef.current;
-    const image = imageRef.current;
-    const imageInner = imageInnerRef.current;
-
-    if (!content || !image || !imageInner) return;
-
-    const previousIndex = activeIndexRef.current;
-
-    activeIndexRef.current = index;
-    setActiveIndex(index);
-
-    isAnimatingRef.current = true;
-
-    /*
-     * ---------------------------------------------------
-     * CONTENT ANIMATION
-     * ---------------------------------------------------
-     */
-
-    const direction = index > previousIndex ? -1 : 1;
-
-    gsap.killTweensOf(content);
-
-    gsap.to(content, {
-      y: direction * -20,
-      opacity: 0,
-      duration: 0.25,
-      ease: "power2.in",
-      overwrite: true,
-
-      onComplete: () => {
-        gsap.fromTo(
-          content,
-          {
-            y: direction * 20,
-            opacity: 0,
-          },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.65,
-            ease: "power3.out",
-            overwrite: true,
-          }
-        );
-      },
-    });
-
-    /*
-     * ---------------------------------------------------
-     * IMAGE ANIMATION
-     * ---------------------------------------------------
-     */
-
-    gsap.killTweensOf(image);
-    gsap.killTweensOf(imageInner);
-
-    gsap.to(image, {
-      opacity: 0,
-      duration: 0.22,
-      ease: "power2.in",
-      overwrite: true,
-
-      onComplete: () => {
-        /*
-         * New image starts from bottom
-         */
-
-        gsap.set(image, {
-          clipPath: "inset(100% 0% 0% 0%)",
+    const ctx = gsap.context(() => {
+      /* ---------------------------------
+         Heading entrance
+      --------------------------------- */
+      gsap.fromTo(
+        headingRef.current,
+        { y: 80, opacity: 0 },
+        {
+          y: 0,
           opacity: 1,
-        });
-
-        gsap.set(imageInner, {
-          scale: 1.06,
-          yPercent: 3,
-        });
-
-        /*
-         * Image reveal
-         */
-
-        gsap.to(image, {
-          clipPath: "inset(0% 0% 0% 0%)",
-          duration: 0.75,
-          ease: "power4.inOut",
-          overwrite: true,
-        });
-
-        /*
-         * Image zoom
-         */
-
-        gsap.to(imageInner, {
-          scale: 1,
-          yPercent: 0,
-          duration: 0.9,
+          duration: 1.2,
           ease: "power3.out",
-          overwrite: true,
+          scrollTrigger: {
+            trigger: headingRef.current,
+            start: "top 85%",
+            once: true,
+          },
+        }
+      );
 
-          onComplete: () => {
-            isAnimatingRef.current = false;
+      /* ---------------------------------
+         Cards entrance
+      --------------------------------- */
+      const cards = gsap.utils.toArray<HTMLElement>(".milestone-card");
+
+      gsap.fromTo(
+        cards,
+        { y: 70, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          stagger: 0.12,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: cardsRef.current,
+            start: "top 82%",
+            once: true,
+          },
+        }
+      );
+
+      /* ---------------------------------
+         Parallax
+      --------------------------------- */
+      gsap.to(headingRef.current, {
+        y: -70,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.2,
+        },
+      });
+
+      cards.forEach((card, index) => {
+        const direction = index % 2 === 0 ? -1 : 1;
+
+        gsap.to(card, {
+          y: direction * 35,
+          ease: "none",
+          scrollTrigger: {
+            trigger: card,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1.5,
           },
         });
-      },
-    });
-  };
+      });
 
-  const active = milestones[activeIndex];
+      /* ---------------------------------
+         Hover animations (with proper cleanup)
+      --------------------------------- */
+      const cleanups: Array<() => void> = [];
+
+      cards.forEach((card) => {
+        const year = card.querySelector<HTMLElement>(".milestone-year");
+        const line = card.querySelector<HTMLElement>(".milestone-line");
+        const title = card.querySelector<HTMLElement>(".milestone-title");
+
+        const targets = [
+          { el: card, enter: { x: 8 }, leave: { x: 0 } },
+          { el: year, enter: { x: 6, scale: 1.04 }, leave: { x: 0, scale: 1 } },
+          { el: line, enter: { width: "100%" }, leave: { width: "45%" } },
+          { el: title, enter: { x: 5 }, leave: { x: 0 } },
+        ];
+
+        const enter = () => {
+          targets.forEach(({ el, enter }) => {
+            if (el) gsap.to(el, { ...enter, duration: 0.5, ease: "power3.out" });
+          });
+        };
+
+        const leave = () => {
+          targets.forEach(({ el, leave }) => {
+            if (el) gsap.to(el, { ...leave, duration: 0.5, ease: "power3.out" });
+          });
+        };
+
+        card.addEventListener("mouseenter", enter);
+        card.addEventListener("mouseleave", leave);
+
+        cleanups.push(() => {
+          card.removeEventListener("mouseenter", enter);
+          card.removeEventListener("mouseleave", leave);
+        });
+      });
+
+      return () => {
+        cleanups.forEach((fn) => fn());
+      };
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section
-      className="
-        relative
-        bg-[#F7F5F1]
-        px-6
-        py-24
-        md:px-10
-        lg:px-20
-        lg:py-32
-      "
+      ref={sectionRef}
+      className="relative overflow-hidden bg-[#F7F5F1] py-28 md:py-36 lg:py-44"
     >
-      <div className="mx-auto w-full max-w-[1800px]">
-
-        {/* =================================================
+      <div className="w-full px-6 md:px-10 lg:px-20">
+        {/* =================================
             HEADER
-        ================================================= */}
-
-        <div>
+        ================================= */}
+        <div ref={headingRef} className="mb-20">
           <span
             className="
+              mb-6
+              block
               text-[20px]
               font-semibold
               uppercase
@@ -235,271 +183,135 @@ export default function Milestones() {
               text-[#8A837A]
             "
           >
-            Our Journey
+            OUR JOURNEY
           </span>
 
           <h2
             className="
-              mt-6
-              max-w-[1000px]
+              w-full
               text-[clamp(60px,8vw,110px)]
               font-bold
               uppercase
-              leading-[0.86]
+              leading-[0.88]
               tracking-[-0.055em]
               text-[#171715]
             "
           >
             A Legacy
             <br />
-            Built Over Time.
+            Built Over Time
           </h2>
         </div>
 
-        {/* =================================================
-            MAIN AREA
-        ================================================= */}
-
-        <div
-          className="
-            mt-14
-            grid
-            grid-cols-1
-            gap-12
-
-            lg:mt-20
-            lg:grid-cols-12
-            lg:items-center
-            lg:gap-0
-          "
-        >
-
-          {/* =================================================
-              LEFT — YEARS
-          ================================================= */}
-
-          <div className="lg:col-span-3">
-            <div className="flex flex-col">
-
-              {milestones.map((milestone, index) => {
-                const isActive = activeIndex === index;
-
-                return (
-                  <button
-                    key={milestone.year}
-                    type="button"
-                    onMouseEnter={() => changeMilestone(index)}
-                    onClick={() => changeMilestone(index)}
-                    className="
-                      group
-                      flex
-                      w-fit
-                      cursor-pointer
-                      items-center
-                      py-4
-                      text-left
-                      outline-none
-                    "
-                  >
-
-                    {/* ACTIVE DOT */}
-
-                    <span
-                      className={`
-                        mr-5
-                        h-[7px]
-                        w-[7px]
-                        shrink-0
-                        rounded-full
-                        bg-[#B79B67]
-
-                        transition-all
-                        duration-500
-                        ease-[cubic-bezier(0.16,1,0.3,1)]
-
-                        ${
-                          isActive
-                            ? "scale-100 opacity-100"
-                            : "scale-0 opacity-0"
-                        }
-                      `}
-                    />
-
-                    {/* YEAR */}
-
-                    <span
-                      className={`
-                        text-[clamp(48px,5vw,82px)]
-                        font-serif
-                        leading-none
-                        tracking-[-0.045em]
-
-                        transition-all
-                        duration-500
-                        ease-[cubic-bezier(0.16,1,0.3,1)]
-
-                        ${
-                          isActive
-                            ? "translate-x-1 text-[#171715]"
-                            : "translate-x-0 text-[#171715]/20"
-                        }
-
-                        group-hover:translate-x-1
-                        group-hover:text-[#171715]
-                      `}
-                    >
-                      {milestone.year}
-                    </span>
-
-                  </button>
-                );
-              })}
-
-            </div>
-          </div>
-
-          {/* =================================================
-              CENTER — ACTIVE CONTENT
-          ================================================= */}
-
-          <div
-            ref={contentRef}
-            className="
-              lg:col-span-4
-              lg:col-start-4
-              lg:pt-2
-              will-change-transform
-            "
-          >
-            <div className="max-w-[480px]">
-
-              {/* YEAR LABEL */}
-
-              <span
-                className="
-                  text-[13px]
-                  font-semibold
-                  uppercase
-                  tracking-[0.1em]
-                  text-[#B79B67]
-                "
-              >
-                {active.year}
-              </span>
-
-              {/* TITLE */}
-
-              <h3
-                className="
-                  mt-6
-                  text-[clamp(40px,4vw,64px)]
-                  font-bold
-                  uppercase
-                  leading-[0.9]
-                  tracking-[-0.045em]
-                  text-[#171715]
-                "
-              >
-                {active.title}
-              </h3>
-
-              {/* DESCRIPTION */}
-
-              <p
-                className="
-                  mt-8
-                  max-w-[450px]
-                  text-[19px]
-                  font-medium
-                  leading-[1.5]
-                  tracking-[-0.015em]
-                  text-[#171715]/55
-                "
-              >
-                {active.description}
-              </p>
-
-            </div>
-          </div>
-
-          {/* =================================================
-              RIGHT — ACTIVE IMAGE
-          ================================================= */}
-
-          <div
-            className="
-              lg:col-span-5
-              lg:col-start-8
-              lg:flex
-              lg:justify-end
-            "
-          >
+        {/* =================================
+            MILESTONE CARDS
+        ================================= */}
+        <div ref={cardsRef} className="border-t border-[#171715]/15">
+          {milestones.map((milestone) => (
             <div
-              ref={imageRef}
+              key={milestone.year}
               className="
+                milestone-card
+                group
                 relative
-                h-[360px]
-                w-full
-                max-w-[600px]
-                overflow-hidden
-
-                lg:h-[480px]
-
-                will-change-[clip-path,opacity]
+                border-b
+                border-[#171715]/15
+                py-8
+                md:py-10
+                lg:py-12
               "
             >
-
-              <div
-                ref={imageInnerRef}
-                className="
-                  absolute
-                  inset-[-6%]
-                  will-change-transform
-                "
-              >
-                <Image
-                  key={active.year}
-                  src={active.image}
-                  alt={`${active.title} — Heaven Furniture Mart`}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 40vw"
-                  priority={activeIndex === 0}
-                />
-              </div>
-
-              {/* IMAGE FOOTER */}
-
               <div
                 className="
-                  absolute
-                  bottom-6
-                  left-6
-                  right-6
-
-                  flex
-                  items-center
-                  justify-between
-
-                  text-[10px]
-                  font-semibold
-                  uppercase
-                  tracking-[0.08em]
-                  text-white
+                  grid
+                  grid-cols-1
+                  gap-7
+                  md:grid-cols-12
+                  md:items-center
+                  md:gap-10
                 "
               >
-                <span>
-                  Heaven Furniture Mart
-                </span>
+                {/* YEAR */}
+                <div className="md:col-span-3">
+                  <span
+                    className="
+                      milestone-year
+                      block
+                      font-sans
+                      text-[22px]
+                      font-bold
+                      uppercase
+                      leading-[1.1]
+                      tracking-[-0.02em]
+                      text-[#171715]
+                      transition-colors
+                      duration-150
+                      md:text-[27px]
+                      lg:text-[80px]
+                    "
+                  >
+                    {milestone.year}
+                  </span>
+                </div>
 
-                <span>
-                  {String(activeIndex + 1).padStart(2, "0")} / 05
-                </span>
+                {/* CONTENT */}
+                <div className="md:col-span-7">
+                  <h3
+                    className="
+                      milestone-title
+                      text-[clamp(25px,3vw,42px)]
+                      font-semibold
+                      leading-[1.05]
+                      tracking-[-0.035em]
+                      text-[#171715]
+                    "
+                  >
+                    {milestone.title}
+                  </h3>
+
+                  <div
+                    className="
+                      milestone-line
+                      mt-6
+                      h-px
+                      w-[45%]
+                      bg-[#B79B67]/70
+                    "
+                  />
+
+                  <p
+                    className="
+                      mt-6
+                      max-w-[650px]
+                      text-[14px]
+                      font-medium
+                      leading-[1.8]
+                      text-[#716B63]
+                      md:text-[18px]
+                    "
+                  >
+                    {milestone.description}
+                  </p>
+                </div>
               </div>
 
+              {/* subtle hover background */}
+              <div
+                className="
+                  pointer-events-none
+                  absolute
+                  inset-x-0
+                  bottom-0
+                  z-0
+                  h-0
+                  bg-[#171715]/[0.025]
+                  transition-all
+                  duration-500
+                  group-hover:h-full
+                "
+              />
             </div>
-          </div>
-
+          ))}
         </div>
       </div>
     </section>

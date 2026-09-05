@@ -2,339 +2,163 @@
 
 import { useLayoutEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import AnimatedButton from "./shared/AnimatedButton";
 
 gsap.registerPlugin(ScrollTrigger);
 
-type Reason = {
-  number: string;
-  title: string;
-  description: string;
-};
-
-const reasons: Reason[] = [
+const bespokeItems = [
   {
-    number: "01",
-    title: "Local Craftsmanship",
-    description:
-      "Skilled hands and careful making, right here in Chattogram. Every piece carries the character of thoughtful, local craftsmanship.",
+    text: "Every piece begins with your space, your lifestyle, and the way you actually live. We create furniture that feels naturally at home.",
+    image: "/heavenHero.jpg",
   },
   {
-    number: "02",
-    title: "Quality Materials",
-    description:
-      "Selected materials and finishes chosen for their natural beauty, durability and ability to age beautifully over time.",
+    text: "From material selection to the smallest detail, every element is thoughtfully considered to create furniture with character and purpose.",
+    image: "/heavenHero.jpg",
   },
   {
-    number: "03",
-    title: "Made For Your Space",
-    description:
-      "Furniture designed around your home, your style and the way you actually live — never simply taken from a template.",
-  },
-  {
-    number: "04",
-    title: "Attention To Detail",
-    description:
-      "Every proportion, finish and small detail is thoughtfully considered to create something that feels right in your space.",
+    text: "Timeless proportions, carefully selected materials, and refined craftsmanship come together to create pieces made for years of living.",
+    image: "/heavenHero.jpg",
   },
 ];
 
-const TOTAL = String(reasons.length).padStart(2, "0");
-
-export default function WhyChooseHeaven() {
+export default function Bespoke() {
   const sectionRef = useRef<HTMLElement>(null);
-  const leftColumnRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
-    const section = sectionRef.current;
-    const leftColumn = leftColumnRef.current;
-    const heading = headingRef.current;
-
-    if (!section || !leftColumn || !heading) return;
-
     const ctx = gsap.context(() => {
-      // =====================================================
-      // LEFT HEADING — ENTRANCE
-      // =====================================================
+      /* =================================
+         MAIN HEADING WORD REVEAL
+      ================================= */
 
-      gsap.fromTo(
-        heading,
-        {
-          opacity: 0,
-        },
-        {
-          opacity: 1,
-          duration: 0.9,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 80%",
-            toggleActions: "play none none reverse",
-          },
+      const heading = headingRef.current;
+
+      if (!heading) return;
+
+      const headingWords =
+        heading.textContent?.trim().split(/\s+/) || [];
+
+      heading.innerHTML = "";
+
+      headingWords.forEach((word, index) => {
+        const span = document.createElement("span");
+
+        span.className =
+          "bespoke-heading-word inline-block will-change-transform";
+
+        span.textContent = word;
+
+        heading.appendChild(span);
+
+        if (index < headingWords.length - 1) {
+          heading.appendChild(document.createTextNode(" "));
         }
-      );
-
-      // =====================================================
-      // TOP → CENTER PARALLAX
-      // =====================================================
-
-      const getCenterTravel = () => {
-        const prevY = gsap.getProperty(heading, "y") as number;
-
-        gsap.set(heading, {
-          y: 0,
-        });
-
-        const sectionTop =
-          section.getBoundingClientRect().top + window.scrollY;
-
-        const headingRect = heading.getBoundingClientRect();
-
-        const naturalOffsetInSection =
-          headingRect.top + window.scrollY - sectionTop;
-
-        const headingHeight = headingRect.height;
-
-        gsap.set(heading, {
-          y: prevY,
-        });
-
-        const desiredTop =
-          window.innerHeight / 2 - headingHeight / 2;
-
-        return desiredTop - naturalOffsetInSection;
-      };
-
-      gsap.fromTo(
-        heading,
-        {
-          y: 0,
-        },
-        {
-          y: () => getCenterTravel(),
-          ease: "none",
-          scrollTrigger: {
-            trigger: section,
-            start: "top bottom",
-            end: "top top",
-            scrub: true,
-            invalidateOnRefresh: true,
-          },
-        }
-      );
-
-      // =====================================================
-      // LEFT COLUMN PIN
-      // =====================================================
-
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top top",
-        end: "bottom bottom",
-        pin: leftColumn,
-        pinSpacing: false,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
       });
 
-      // =====================================================
-      // RIGHT SIDE ITEMS
-      // =====================================================
-
-      const items =
-        gsap.utils.toArray<HTMLElement>(".why-item");
-
-      items.forEach((item) => {
-        const number =
-          item.querySelector<HTMLElement>(".why-number");
-
-        const numberTotal =
-          item.querySelector<HTMLElement>(".why-number-total");
-
-        const title =
-          item.querySelector<HTMLElement>(".why-title");
-
-        const description =
-          item.querySelector<HTMLElement>(".why-description");
-
-        const line =
-          item.querySelector<HTMLElement>(".why-line");
-
-        const imageWrap =
-          item.querySelector<HTMLElement>(".why-image-wrap");
-
-        const image =
-          item.querySelector<HTMLElement>(".why-image");
-
-        if (
-          !number ||
-          !numberTotal ||
-          !title ||
-          !description ||
-          !line ||
-          !imageWrap ||
-          !image
-        ) {
-          return;
-        }
-
-        // =================================================
-        // INITIAL STATES
-        // =================================================
-
-        gsap.set(item, {
-          opacity: 0.3,
-        });
-
-        gsap.set(description, {
-          opacity: 0,
-          y: 25,
-        });
-
-        gsap.set(imageWrap, {
-          opacity: 0,
-          y: 35,
-        });
-
-        gsap.set(image, {
-          scale: 1.08,
-        });
-
-        gsap.set(line, {
-          scaleX: 0,
-          transformOrigin: "left center",
-        });
-
-        // =================================================
-        // REVEAL
-        // =================================================
-
-        const reveal = gsap.timeline({
-          scrollTrigger: {
-            trigger: item,
-            start: "top 78%",
-            toggleActions: "play none none reverse",
-          },
-        });
-
-        reveal.to(
-          item,
-          {
-            opacity: 1,
-            duration: 0.5,
-            ease: "power2.out",
-          },
-          0
+      const headingSpans =
+        heading.querySelectorAll<HTMLElement>(
+          ".bespoke-heading-word"
         );
 
-        reveal.to(
-          number,
-          {
-            opacity: 1,
-            color: "#D9A441",
-            duration: 0.35,
-          },
-          0
+      gsap.set(headingSpans, {
+        y: 60,
+        opacity: 0.08,
+      });
+
+      gsap.to(headingSpans, {
+        y: 0,
+        opacity: 1,
+        stagger: 0.045,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: heading,
+          start: "top 85%",
+          end: "top 35%",
+          scrub: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      /* =================================
+         BESPOKE TEXT WORD REVEAL
+      ================================= */
+
+      const textBlocks =
+        gsap.utils.toArray<HTMLElement>(
+          ".bespoke-text"
         );
 
-        reveal.to(
-          numberTotal,
-          {
-            opacity: 1,
-            duration: 0.35,
-          },
-          0
-        );
+      textBlocks.forEach((text) => {
+        const words =
+          text.textContent?.trim().split(/\s+/) || [];
 
-        reveal.to(
-          title,
-          {
-            color: "#F7F5F1",
-            duration: 0.4,
-          },
-          0
-        );
+        text.innerHTML = "";
 
-        reveal.to(
-          line,
-          {
-            scaleX: 1,
-            duration: 0.7,
-            ease: "power3.inOut",
-          },
-          0
-        );
+        words.forEach((word, index) => {
+          const span = document.createElement("span");
 
-        reveal.to(
-          description,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.5,
-            ease: "power3.out",
-          },
-          0.08
-        );
+          span.className =
+            "bespoke-word inline-block will-change-transform";
 
-        reveal.to(
-          imageWrap,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-            ease: "power3.out",
-          },
-          0.12
-        );
+          span.textContent = word;
 
-        reveal.to(
-          image,
-          {
-            scale: 1,
-            duration: 1,
-            ease: "power3.out",
-          },
-          0.12
-        );
+          text.appendChild(span);
 
-        // =================================================
-        // CONTENT PARALLAX
-        // =================================================
-
-        gsap.fromTo(
-          item,
-          {
-            y: 35,
-          },
-          {
-            y: -35,
-            ease: "none",
-            scrollTrigger: {
-              trigger: item,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 1,
-              invalidateOnRefresh: true,
-            },
+          if (index < words.length - 1) {
+            text.appendChild(
+              document.createTextNode(" ")
+            );
           }
+        });
+
+        const wordSpans =
+          text.querySelectorAll<HTMLElement>(
+            ".bespoke-word"
+          );
+
+        gsap.set(wordSpans, {
+          y: 35,
+          opacity: 0.12,
+        });
+
+        gsap.to(wordSpans, {
+          y: 0,
+          opacity: 1,
+          stagger: 0.025,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: text,
+            start: "top 82%",
+            end: "top 35%",
+            scrub: 1,
+            invalidateOnRefresh: true,
+          },
+        });
+      });
+
+      /* =================================
+         IMAGE PARALLAX
+      ================================= */
+
+      const images =
+        gsap.utils.toArray<HTMLElement>(
+          ".bespoke-image"
         );
 
-        // =================================================
-        // IMAGE PARALLAX
-        // =================================================
-
+      images.forEach((image) => {
         gsap.fromTo(
           image,
           {
-            yPercent: -8,
+            y: 50,
           },
           {
-            yPercent: 8,
+            y: -50,
             ease: "none",
             scrollTrigger: {
-              trigger: item,
+              trigger: image,
               start: "top bottom",
               end: "bottom top",
               scrub: 1.2,
@@ -342,50 +166,14 @@ export default function WhyChooseHeaven() {
             },
           }
         );
-
-        // =================================================
-        // IMAGE HOVER
-        // =================================================
-
-        const handleEnter = () => {
-          gsap.to(image, {
-            scale: 1.06,
-            duration: 0.8,
-            ease: "power3.out",
-          });
-        };
-
-        const handleLeave = () => {
-          gsap.to(image, {
-            scale: 1,
-            duration: 0.8,
-            ease: "power3.out",
-          });
-        };
-
-        imageWrap.addEventListener(
-          "mouseenter",
-          handleEnter
-        );
-
-        imageWrap.addEventListener(
-          "mouseleave",
-          handleLeave
-        );
       });
-
-      // =====================================================
-      // REFRESH
-      // =====================================================
 
       requestAnimationFrame(() => {
         ScrollTrigger.refresh();
       });
-    }, section);
+    }, sectionRef);
 
-    return () => {
-      ctx.revert();
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -393,313 +181,175 @@ export default function WhyChooseHeaven() {
       ref={sectionRef}
       className="
         relative
-        z-10
-        w-full
-        bg-[#34494A]
-        px-5
-        py-28
-        text-[#F7F5F1]
-
-        md:px-[4.15vw]
-        md:py-[12vw]
+        overflow-hidden
+        bg-[#171715]
+        px-6
+        pb-28
+        md:px-10
+        lg:px-20
       "
     >
-      <div
-        className="
-          mx-auto
-          grid
-          w-full
-          max-w-[1800px]
-          grid-cols-1
-          gap-16
+      {/* =================================
+          HEADER
+      ================================= */}
 
-          md:grid-cols-[0.85fr_1.15fr]
-          md:items-start
-          md:gap-[7vw]
-        "
-      >
-        {/* =================================================
-            LEFT COLUMN
-        ================================================= */}
-
-        <div
-          ref={leftColumnRef}
+      <div className="mb-10 md:mb-16">
+        <span
           className="
-            relative
-            hidden
-            md:block
+            mb-6
+            block
+            text-[14px]
+            font-semibold
+            uppercase
+            tracking-[0.08em]
+            text-[#9B958C]
+            md:text-[16px]
+            lg:text-[18px]
           "
         >
-          <div
-            ref={headingRef}
-            className="
-              w-full
-              will-change-transform
-            "
-          >
-            <span
+          BESPOKE LIVING
+        </span>
+
+        <h2
+          ref={headingRef}
+          className="
+            w-full
+            break-words
+            text-[clamp(38px,10vw,110px)]
+            font-bold
+            uppercase
+            leading-[0.95]
+            tracking-[-0.03em]
+            text-[#F7F5F1]
+            sm:leading-[0.9]
+            md:leading-[0.88]
+            md:tracking-[-0.055em]
+          "
+        >
+          Designed Around You
+        </h2>
+      </div>
+
+      {/* =================================
+          BESPOKE ITEMS
+      ================================= */}
+
+      <div className="w-full">
+        {bespokeItems.map((item, index) => {
+          const imageLeft = index % 2 === 0;
+
+          return (
+            <div
+              key={index}
               className="
-                mb-7
-                block
-                text-[20px]
-                font-semibold
-                uppercase
-                tracking-[-0.01em]
-                text-[#D9A441]
+                mb-32
+                last:mb-0
+                md:mb-44
+                lg:mb-52
               "
             >
-              Why Choose Heaven
-            </span>
-
-            <h2
-              className="
-                max-w-[900px]
-                text-[110px]
-                font-bold
-                uppercase
-                leading-[0.91]
-                tracking-[-0.05em]
-                text-[#F7F5F1]
-              "
-            >
-              Thoughtfully
-              <br />
-              made for
-              <br />
-              living.
-            </h2>
-          </div>
-        </div>
-
-        {/* =================================================
-            MOBILE HEADING
-        ================================================= */}
-
-        <div className="md:hidden">
-          <span
-            className="
-              mb-6
-              block
-              text-[14px]
-              font-semibold
-              uppercase
-              text-[#D9A441]
-            "
-          >
-            Why Choose Heaven
-          </span>
-
-          <h2
-            className="
-              text-[52px]
-              font-bold
-              uppercase
-              leading-[0.94]
-              tracking-[-0.045em]
-              text-[#F7F5F1]
-            "
-          >
-            Thoughtfully
-            <br />
-            made for
-            <br />
-            living.
-          </h2>
-        </div>
-
-        {/* =================================================
-            RIGHT CONTENT
-        ================================================= */}
-
-        <div className="w-full">
-          {reasons.map((reason) => (
-            <article
-              key={reason.number}
-              className="
-                why-item
-                relative
-                border-t
-                border-[#F7F5F1]/15
-                py-12
-                will-change-transform
-
-                md:py-16
-              "
-            >
-              {/* -----------------------------------------
-                  TOP LINE
-              ----------------------------------------- */}
-
               <div
-                className="
-                  why-line
-                  absolute
-                  left-0
-                  top-[-1px]
-                  h-px
-                  w-full
-                  bg-[#D9A441]
-                "
-              />
-
-              {/* -----------------------------------------
-                  NUMBER
-              ----------------------------------------- */}
-
-              <div
-                className="
-                  mb-6
+                className={`
                   flex
-                  items-baseline
-                  gap-2
-                "
-              >
-                <span
-                  className="
-                    why-number
-                    text-[15px]
-                    font-bold
-                    tracking-[0.05em]
-                    text-[#F7F5F1]/60
-                  "
-                >
-                  {reason.number}
-                </span>
-
-                <span
-                  className="
-                    why-number-total
-                    text-[13px]
-                    font-medium
-                    tracking-[0.05em]
-                    text-[#F7F5F1]/30
-                    opacity-0
-                  "
-                >
-                  / {TOTAL}
-                </span>
-              </div>
-
-              {/* -----------------------------------------
-                  TITLE
-              ----------------------------------------- */}
-
-              <h3
-                className="
-                  why-title
-                  max-w-[900px]
-                  text-[clamp(30px,3.4vw,52px)]
-                  font-bold
-                  uppercase
-                  leading-[0.96]
-                  tracking-[-0.035em]
-                  text-[#F7F5F1]
-                "
-              >
-                {reason.title}
-              </h3>
-
-              {/* -----------------------------------------
-                  DESCRIPTION
-              ----------------------------------------- */}
-
-              <p
-                className="
-                  why-description
-                  mt-7
-                  max-w-[560px]
-                  text-[18px]
-                  leading-[1.5]
-                  text-[#F7F5F1]/60
-
-                  md:text-[21px]
-                  md:leading-[1.45]
-                "
-              >
-                {reason.description}
-              </p>
-
-              {/* -----------------------------------------
-                  LARGE IMAGE
-              ----------------------------------------- */}
-
-              <div
-                className="
-                  why-image-wrap
-                  group
-                  relative
-                  mt-12
-                  h-[65vw]
-                  max-h-[650px]
                   w-full
-                  cursor-pointer
-                  overflow-hidden
-
-                  md:mt-14
-                  md:h-[34vw]
-                  md:min-h-[430px]
-                "
+                  flex-col
+                  items-center
+                  gap-14
+                  md:flex-row
+                  md:gap-16
+                  lg:gap-20
+                  ${
+                    imageLeft
+                      ? ""
+                      : "md:flex-row-reverse"
+                  }
+                `}
               >
+                {/* IMAGE */}
+
                 <div
                   className="
-                    why-image
                     relative
-                    h-[116%]
                     w-full
-                    -translate-y-[8%]
-                    will-change-transform
+                    overflow-hidden
+                    md:w-[42%]
+                    lg:w-[40%]
                   "
                 >
-                  {/*
-                    IMPORTANT FIX:
-                    1. priority removed
-                    2. sizes is now a single-line string
-
-                    This prevents Next/Image from generating
-                    the problematic preload selector.
-                  */}
-
-                  <Image
-                    src="/heavenHero.jpg"
-                    alt={reason.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 60vw"
+                  <div
                     className="
-                      object-cover
-                      object-center
+                      relative
+                      h-[260px]
+                      w-full
+                      overflow-hidden
+                      sm:h-[300px]
+                      md:h-[380px]
+                      lg:h-[450px]
                     "
-                  />
+                  >
+                    <Image
+                      src={item.image}
+                      alt="Heaven bespoke furniture"
+                      fill
+                      sizes="(max-width: 767px) 100vw, (max-width: 1023px) 42vw, 40vw"
+                      className="
+                        bespoke-image
+                        scale-[1.12]
+                        object-cover
+                        will-change-transform
+                      "
+                    />
+                  </div>
                 </div>
 
+                {/* TEXT */}
+
                 <div
                   className="
-                    pointer-events-none
-                    absolute
-                    inset-x-0
-                    bottom-0
-                    h-1/3
-                    bg-gradient-to-t
-                    from-black/30
-                    to-transparent
-                    opacity-0
-                    transition-opacity
-                    duration-500
-
-                    group-hover:opacity-100
+                    w-full
+                    md:w-[58%]
+                    lg:w-[60%]
                   "
-                />
+                >
+                  <p
+                    className="
+                      bespoke-text
+                      w-full
+                      break-words
+                      text-[clamp(22px,6vw,58px)]
+                      font-medium
+                      leading-[1.15]
+                      tracking-[-0.02em]
+                      text-[#F7F5F1]
+                      sm:leading-[1.1]
+                      md:text-[clamp(30px,3.45vw,58px)]
+                      md:leading-[1.08]
+                      md:tracking-[-0.038em]
+                    "
+                  >
+                    {item.text}
+                  </p>
+                </div>
               </div>
-            </article>
-          ))}
+            </div>
+          );
+        })}
+      </div>
 
-          <div
-            className="
-              h-px
-              w-full
-              bg-[#F7F5F1]/15
-            "
-          />
-        </div>
+      {/* =================================
+          CTA
+      ================================= */}
+
+      <div
+        className="
+          mt-28
+          flex
+          justify-center
+          md:mt-36
+          lg:mt-44
+        "
+      >
+        <AnimatedButton text="Request A Free Quote" href="/" />
       </div>
     </section>
   );

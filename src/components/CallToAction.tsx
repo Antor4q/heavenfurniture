@@ -10,170 +10,186 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function CTA() {
   const sectionRef = useRef<HTMLElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
 
-  const lineRef = useRef<HTMLDivElement>(null);
-  const labelRef = useRef<HTMLSpanElement>(null);
-  const headingRef = useRef<HTMLHeadingElement>(null);
+  const imageWrapRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  const titleRef = useRef<HTMLHeadingElement>(null);
+
   const contentRef = useRef<HTMLDivElement>(null);
-  const secondaryRef = useRef<HTMLAnchorElement>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const descriptionRef = useRef<HTMLParagraphElement>(null);
+  const buttonsRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       const section = sectionRef.current;
-      const line = lineRef.current;
-      const label = labelRef.current;
-      const heading = headingRef.current;
+      const sticky = stickyRef.current;
+      const imageWrap = imageWrapRef.current;
+      const image = imageRef.current;
+      const title = titleRef.current;
+
       const content = contentRef.current;
-      const secondary = secondaryRef.current;
-      const bottom = bottomRef.current;
+      const description = descriptionRef.current;
+      const buttons = buttonsRef.current;
 
       if (
         !section ||
-        !line ||
-        !label ||
-        !heading ||
+        !sticky ||
+        !imageWrap ||
+        !image ||
+        !title ||
         !content ||
-        !secondary ||
-        !bottom
+        !description ||
+        !buttons
       ) {
         return;
       }
 
-      /* =====================================================
-         INITIAL STATE
-      ===================================================== */
+      /*
+      |--------------------------------------------------------------------------
+      | INITIAL STATE
+      |--------------------------------------------------------------------------
+      |
+      | Height is FIXED at 500px — it never changes, not at the start,
+      | not at the end. Only width + clip-path move. "Consultation"
+      | overlaps the image, centered, and sits ABOVE the image (z-index
+      | explicitly higher than everything else in the box).
+      |
+      */
 
-      gsap.set(line, {
-        scaleX: 0,
-        transformOrigin: "left center",
+      gsap.set(imageWrap, {
+        width: "min(76vw, 960px)",
+        height: "500px",
+        clipPath: "inset(5% 0% 5% 0%)",
       });
 
-      gsap.set(label, {
-        y: 30,
-        opacity: 0,
+      gsap.set(image, {
+        scale: 1.14,
+        yPercent: 6,
       });
 
-      gsap.set(heading, {
-        y: 100,
-        opacity: 0,
+      gsap.set(title, {
+        opacity: 1,
+        scale: 1,
+        y: 0,
       });
 
       gsap.set(content, {
-        y: 50,
         opacity: 0,
       });
 
-      gsap.set(secondary, {
-        y: 25,
+      gsap.set(description, {
         opacity: 0,
+        y: 20,
       });
 
-      gsap.set(bottom, {
-        y: 30,
+      gsap.set(buttons, {
         opacity: 0,
+        y: 20,
       });
 
-      /* =====================================================
-         ENTRANCE
-      ===================================================== */
+      /*
+      |--------------------------------------------------------------------------
+      | EXPAND EFFECT
+      |--------------------------------------------------------------------------
+      |
+      | Only WIDTH and the clip-path mask animate. Height is left
+      | completely alone at 500px the whole time — it is not part
+      | of this tween at all.
+      |
+      */
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: "top 78%",
-          end: "top 35%",
-          scrub: 1,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1.4,
           invalidateOnRefresh: true,
         },
       });
 
       tl.to(
-        line,
+        imageWrap,
         {
-          scaleX: 1,
-          ease: "power3.out",
+          width: "100vw",
+          clipPath: "inset(0% 0% 0% 0%)",
+          ease: "power3.inOut",
+          duration: 2,
         },
         0
-      )
-        .to(
-          label,
-          {
-            y: 0,
-            opacity: 1,
-            ease: "power3.out",
-          },
-          0.02
-        )
-        .to(
-          heading,
-          {
-            y: 0,
-            opacity: 1,
-            ease: "power4.out",
-          },
-          0.08
-        )
-        .to(
-          content,
-          {
-            y: 0,
-            opacity: 1,
-            ease: "power3.out",
-          },
-          0.18
-        )
-        .to(
-          secondary,
-          {
-            y: 0,
-            opacity: 1,
-            ease: "power3.out",
-          },
-          0.26
-        )
-        .to(
-          bottom,
-          {
-            y: 0,
-            opacity: 1,
-            ease: "power3.out",
-          },
-          0.34
-        );
+      );
 
-      /* =====================================================
-         SUBTLE EDITORIAL PARALLAX
-      ===================================================== */
+      /* Parallax on the image */
 
-      gsap.to(heading, {
-        y: -35,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1.5,
-          invalidateOnRefresh: true,
+      tl.to(
+        image,
+        {
+          scale: 1.02,
+          yPercent: -4,
+          ease: "power2.inOut",
+          duration: 2,
         },
-      });
+        0
+      );
 
-      gsap.to(content, {
-        y: -18,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1.7,
-          invalidateOnRefresh: true,
+      /* "Consultation" overlap text hides as the image expands */
+
+      tl.to(
+        title,
+        {
+          opacity: 0,
+          scale: 0.94,
+          y: -20,
+          ease: "power3.inOut",
+          duration: 0.9,
         },
-      });
+        0.5
+      );
 
-      ScrollTrigger.refresh();
+      /* Other content (description + buttons) shows only after expand finishes */
+
+      tl.to(
+        content,
+        {
+          opacity: 1,
+          duration: 0.5,
+          ease: "none",
+        },
+        1.1
+      );
+
+      tl.to(
+        description,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: "power3.out",
+        },
+        1.2
+      );
+
+      tl.to(
+        buttons,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: "power3.out",
+        },
+        1.34
+      );
+
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+    };
   }, []);
 
   return (
@@ -182,215 +198,207 @@ export default function CTA() {
       id="contact"
       className="
         relative
-        overflow-hidden
+        h-[220vh]
+        w-full
         bg-[#F1EEE8]
-        px-6
-        py-32
-        md:px-12
-        md:py-44
-        lg:px-20
-        lg:py-56
       "
     >
-      <div className="mx-auto w-full max-w-[1800px]">
+      {/* =========================================
+          STICKY VIEWPORT
+      ========================================= */}
 
-        {/* =================================================
-            TOP LINE
-        ================================================= */}
-
-        <div
-          ref={lineRef}
-          className="
-            mb-10
-            h-px
-            w-full
-            bg-[#171715]/15
-            md:mb-14
-          "
-        />
-
-        {/* =================================================
-            LABEL
-        ================================================= */}
-
-        <span
-          ref={labelRef}
-          className="
-            block
-            text-[18px]
-            font-semibold
-            uppercase
-            text-[#8A837A]
-            md:text-[20px]
-          "
-        >
-          05 / Begin
-        </span>
-
-        {/* =================================================
-            MAIN GRID
-        ================================================= */}
+      <div
+        ref={stickyRef}
+        className="
+          sticky
+          top-0
+          flex
+          h-screen
+          w-full
+          items-center
+          justify-center
+          overflow-hidden
+        "
+      >
+        {/* =========================================
+            IMAGE BOX — height fixed 500px always
+        ========================================= */}
 
         <div
+          ref={imageWrapRef}
           className="
-            mt-12
-            grid
-            grid-cols-1
-            gap-16
-            lg:mt-20
-            lg:grid-cols-[minmax(0,1fr)_360px]
-            lg:gap-24
+            absolute
+            left-1/2
+            top-1/2
+            z-0
+            -translate-x-1/2
+            -translate-y-1/2
+            overflow-hidden
+            will-change-[width,clip-path]
           "
         >
+          {/* IMAGE — sits at the back */}
 
-          {/* =================================================
-              HEADING
-          ================================================= */}
+          <img
+            ref={imageRef}
+            src="/heavenHero.jpg"
+            alt="Heaven Furniture"
+            onLoad={() => ScrollTrigger.refresh()}
+            className="
+              absolute
+              inset-0
+              z-0
+              h-full
+              w-full
+              object-cover
+              will-change-transform
+            "
+          />
 
-          <div className="overflow-hidden">
-            <h2
-              ref={headingRef}
-              className="
-                max-w-[1200px]
-                text-[clamp(58px,9vw,140px)]
-                font-bold
-                uppercase
-                leading-[0.84]
-                tracking-[-0.06em]
-                text-[#171715]
-                will-change-transform
-              "
-            >
-              Make Space
-              <br />
-              For What
-              <br />
-              Matters.
-            </h2>
-          </div>
+          {/* SUBTLE IMAGE OVERLAY — above image, below text */}
 
-          {/* =================================================
-              CTA CONTENT
-          ================================================= */}
+          <div
+            className="
+              pointer-events-none
+              absolute
+              inset-0
+              z-10
+              bg-black/[0.06]
+            "
+          />
+
+          {/* =======================================
+              CONSULTATION — always ON TOP of the
+              image (z-20), centered horizontally
+              + vertically over it. Fades out as
+              the image expands.
+          ======================================= */}
+
+          <h2
+            ref={titleRef}
+            className="
+              pointer-events-none
+              absolute
+              left-1/2
+              top-1/2
+              z-20
+              w-max
+              -translate-x-1/2
+              -translate-y-1/2
+              whitespace-nowrap
+              text-center
+              text-[clamp(52px,9vw,145px)]
+              font-medium
+              uppercase
+              leading-none
+              tracking-[-0.055em]
+              text-[#F1EEE8]/70
+              will-change-transform
+            "
+          >
+            Consultation
+          </h2>
+
+          {/* =======================================
+              EXPANDED-STATE CONTENT — shows only
+              after the expand finishes. Description
+              (2 lines) + buttons, px-20, vertically
+              centered inside the fixed 500px band.
+          ======================================= */}
 
           <div
             ref={contentRef}
             className="
+              absolute
+              inset-0
+              z-30
               flex
-              flex-col
-              justify-end
-              lg:pb-2
+              items-center
+              px-20
             "
           >
-            <p
-              className="
-                max-w-[330px]
-                text-[16px]
-                font-medium
-                leading-[1.6]
-                text-[#171715]
-                md:text-[18px]
-              "
-            >
-              Begin with a conversation. Tell us about
-              your space, taste and vision.
-            </p>
+            <div className="max-w-[560px]">
+              {/* DESCRIPTION */}
 
-            {/* PRIMARY CTA */}
-
-            <div className="mt-9">
-              <AnimatedButton
-                href="#quote"
-                text="Request a Quote"
-              />
-            </div>
-
-            {/* SECONDARY CTA */}
-
-            <a
-              ref={secondaryRef}
-              href="https://wa.me/8801960481983"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="
-                group
-                mt-6
-                inline-flex
-                w-fit
-                items-center
-                gap-3
-                border-b
-                border-[#171715]/20
-                pb-2
-                text-[13px]
-                font-semibold
-                uppercase
-                text-[#171715]
-                transition-colors
-                duration-300
-                hover:border-[#A58B5B]
-                hover:text-[#A58B5B]
-              "
-            >
-              WhatsApp Us
-
-              <span
+              <p
+                ref={descriptionRef}
                 className="
-                  text-[16px]
-                  transition-transform
-                  duration-500
-                  ease-out
-                  group-hover:translate-x-1
-                  group-hover:-translate-y-1
+                  text-[15px]
+                  leading-[1.7]
+                  text-white/80
+                  md:text-[16px]
                 "
               >
-                ↗
-              </span>
-            </a>
+                Every piece begins with your space, your taste, and the way
+                you live. Let&apos;s create something considered, personal.
+              </p>
+
+              {/* BUTTONS */}
+
+              <div
+                ref={buttonsRef}
+                className="
+                  mt-6
+                  flex
+                  flex-wrap
+                  items-center
+                  gap-4
+                "
+              >
+                {/* REQUEST QUOTE */}
+
+                <AnimatedButton
+                  href="#quote"
+                  text="Request a Free Quote"
+                />
+
+                {/* WHATSAPP */}
+
+                <a
+                  href="https://wa.me/8801960481983"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="
+                    group
+                    inline-flex
+                    h-[50px]
+                    items-center
+                    justify-center
+                    gap-3
+                    border
+                    border-white
+                    bg-white
+                    px-7
+                    text-[12px]
+                    font-semibold
+                    uppercase
+                    tracking-[0.08em]
+                    text-[#171715]
+                    transition-all
+                    duration-500
+                    hover:bg-transparent
+                    hover:text-white
+                  "
+                >
+                  WhatsApp Us
+
+                  <span
+                    className="
+                      text-[16px]
+                      transition-transform
+                      duration-500
+                      ease-out
+                      group-hover:translate-x-1
+                      group-hover:-translate-y-1
+                    "
+                  >
+                    ↗
+                  </span>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
-
-        {/* =================================================
-            BOTTOM DETAILS
-        ================================================= */}
-
-        <div
-          ref={bottomRef}
-          className="
-            mt-28
-            flex
-            flex-col
-            gap-5
-            border-t
-            border-[#171715]/10
-            pt-6
-            text-[11px]
-            font-medium
-            uppercase
-            text-[#8A837A]
-            md:mt-40
-            md:flex-row
-            md:items-center
-            md:justify-between
-          "
-        >
-          <span>
-            Free Design Consultation
-          </span>
-
-          <span>
-            Delivery & Installation
-          </span>
-
-          <span>
-            Agrabad · Chattogram
-          </span>
-
-          <span>
-            +880 1960-481983
-          </span>
-        </div>
-
       </div>
     </section>
   );

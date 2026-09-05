@@ -28,7 +28,8 @@ type FeaturedClient = {
 const FEATURED_CLIENTS: FeaturedClient[] = [
   {
     furnitureImage: "/heavenHero.jpg",
-    furnitureImageAlt: "Custom living room set delivered to Rezwana Karim",
+    furnitureImageAlt:
+      "Custom living room set delivered to Rezwana Karim",
     clientImage: "/gall1.webp",
     clientName: "Rezwana Karim",
     productName: "Custom Oak Living Set",
@@ -38,20 +39,24 @@ const FEATURED_CLIENTS: FeaturedClient[] = [
   },
   {
     furnitureImage: "/heavenHero.jpg",
-    furnitureImageAlt: "Bespoke dining set delivered to Farhan Ahmed",
+    furnitureImageAlt:
+      "Bespoke dining set delivered to Farhan Ahmed",
     clientImage: "/gall2.webp",
     clientName: "Farhan Ahmed",
     productName: "Bespoke Walnut Dining Set",
-    quote: "It feels like it was always meant to be in this room.",
+    quote:
+      "It feels like it was always meant to be in this room.",
     quoteAuthorRole: "Homeowner, Baridhara",
   },
   {
     furnitureImage: "/heavenHero.jpg",
-    furnitureImageAlt: "Custom bedroom suite delivered to Nusrat Jahan",
+    furnitureImageAlt:
+      "Custom bedroom suite delivered to Nusrat Jahan",
     clientImage: "/gall3.webp",
     clientName: "Nusrat Jahan",
     productName: "Custom Bedroom Suite",
-    quote: "Still looks new, months later. That's rare in this market.",
+    quote:
+      "Still looks new, months later. That's rare in this market.",
     quoteAuthorRole: "Homeowner, Banani",
   },
 ];
@@ -83,8 +88,11 @@ export default function SocialProof() {
   const featured = FEATURED_CLIENTS[activeIndex];
 
   // =====================================================
-  // SLIDER CROSSFADE — left (image + client card) and
-  // right (quote + author) transition together, in sync.
+  // SLIDER TRANSITION
+  //
+  // No opacity fade / flash.
+  // Image uses smooth slide + scale.
+  // Text/card moves upward into position.
   // =====================================================
 
   useLayoutEffect(() => {
@@ -93,31 +101,89 @@ export default function SocialProof() {
       return;
     }
 
-    const targets = [
-      imageInnerRef.current,
-      clientCreditRef.current,
-      quoteRef.current,
-      authorRef.current,
-    ].filter(Boolean);
+    const image = imageInnerRef.current;
+    const client = clientCreditRef.current;
+    const quote = quoteRef.current;
+    const author = authorRef.current;
 
-    if (!targets.length) return;
+    if (!image || !client || !quote || !author) return;
 
     const tl = gsap.timeline();
 
-    tl.to(targets, {
-      opacity: 0,
-      y: -8,
-      duration: 0.3,
-      ease: "power2.in",
-    })
-      .set(targets, { y: 8 })
-      .to(targets, {
-        opacity: 1,
+    // Make sure nothing fades/blinks
+    gsap.set([image, client, quote, author], {
+      opacity: 1,
+    });
+
+    // -----------------------------------------------------
+    // IMAGE
+    // Smooth movement + subtle scale
+    // -----------------------------------------------------
+
+    tl.fromTo(
+      image,
+      {
+        y: 35,
+        scale: 1.06,
+      },
+      {
         y: 0,
-        duration: 0.5,
+        scale: 1,
+        duration: 0.8,
         ease: "power3.out",
-        stagger: 0.03,
-      });
+      }
+    )
+
+      // ---------------------------------------------------
+      // CLIENT CARD
+      // ---------------------------------------------------
+
+      .fromTo(
+        client,
+        {
+          y: 20,
+        },
+        {
+          y: 0,
+          duration: 0.65,
+          ease: "power3.out",
+        },
+        "-=0.6"
+      )
+
+      // ---------------------------------------------------
+      // QUOTE
+      // ---------------------------------------------------
+
+      .fromTo(
+        quote,
+        {
+          y: 25,
+        },
+        {
+          y: 0,
+          duration: 0.7,
+          ease: "power3.out",
+        },
+        "-=0.5"
+      )
+
+      // ---------------------------------------------------
+      // AUTHOR
+      // ---------------------------------------------------
+
+      .fromTo(
+        author,
+        {
+          y: 15,
+        },
+        {
+          y: 0,
+          duration: 0.6,
+          ease: "power3.out",
+        },
+        "-=0.5"
+      );
 
     return () => {
       tl.kill();
@@ -125,16 +191,22 @@ export default function SocialProof() {
   }, [activeIndex]);
 
   // =====================================================
-  // AUTOPLAY — silent timer, no visible progress/controls.
+  // AUTOPLAY
   // =====================================================
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setActiveIndex((prev) => (prev + 1) % FEATURED_CLIENTS.length);
+      setActiveIndex(
+        (prev) => (prev + 1) % FEATURED_CLIENTS.length
+      );
     }, AUTOPLAY_DURATION_MS);
 
     return () => clearTimeout(timer);
   }, [activeIndex]);
+
+  // =====================================================
+  // SCROLL / PARALLAX / COUNTER
+  // =====================================================
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -165,16 +237,13 @@ export default function SocialProof() {
         return;
       }
 
+      // =====================================================
+      // COUNTER
+      // =====================================================
+
       gsap.set(count, {
         textContent: "0",
       });
-
-      // =====================================================
-      // SCROLL-TRIGGERED COUNTER
-      //
-      // Ei section-e scroll kore ashle 0 -> 300 count hobe
-      // (ekbar, scrub noy). Upore chole gele reverse hobe.
-      // =====================================================
 
       const counter = {
         value: 0,
@@ -184,6 +253,7 @@ export default function SocialProof() {
         value: 300,
 
         duration: 2,
+
         ease: "power2.out",
 
         scrollTrigger: {
@@ -195,7 +265,9 @@ export default function SocialProof() {
         },
 
         onUpdate: () => {
-          count.textContent = Math.round(counter.value).toString();
+          count.textContent = Math.round(
+            counter.value
+          ).toString();
         },
       });
 
@@ -329,8 +401,15 @@ export default function SocialProof() {
         });
       };
 
-      image.addEventListener("mouseenter", handleMouseEnter);
-      image.addEventListener("mouseleave", handleMouseLeave);
+      image.addEventListener(
+        "mouseenter",
+        handleMouseEnter
+      );
+
+      image.addEventListener(
+        "mouseleave",
+        handleMouseLeave
+      );
 
       // =====================================================
       // REFRESH
@@ -371,12 +450,12 @@ export default function SocialProof() {
         w-full
         overflow-hidden
         bg-[#F7F5F1]
-
         px-5
-        py-24
-
+        py-14
+        sm:py-16
         md:px-[4.15vw]
-       
+        md:py-24
+        lg:py-28
       "
     >
       <div
@@ -392,22 +471,25 @@ export default function SocialProof() {
 
         <div
           className="
-            mb-14
+            mb-9
             max-w-[1250px]
-
+            sm:mb-10
             md:mb-[6vw]
           "
         >
           <span
             ref={labelRef}
             className="
-              mb-6
+              mb-4
               block
-              text-[20px]
+              text-[15px]
               font-semibold
               uppercase
-              tracking-[-0.01em]
+              tracking-[-0.005em]
               text-[#8A837A]
+              sm:mb-6
+              sm:text-[20px]
+              sm:tracking-[-0.01em]
             "
           >
             Social Proof
@@ -417,12 +499,17 @@ export default function SocialProof() {
             ref={headingRef}
             className="
               w-full
-              text-[clamp(60px,8vw,110px)]
+              break-words
+              text-[clamp(32px,9vw,110px)]
               font-bold
               uppercase
-              leading-[0.88]
-              tracking-[-0.055em]
+              leading-[0.98]
+              tracking-[-0.025em]
               text-[#171715]
+              sm:leading-[0.9]
+              md:text-[clamp(60px,8vw,110px)]
+              md:leading-[0.88]
+              md:tracking-[-0.055em]
             "
           >
             Homes That
@@ -432,15 +519,15 @@ export default function SocialProof() {
         </div>
 
         {/* =================================================
-            MAIN GRID — both columns share the same height
+            MAIN GRID
             ================================================= */}
 
         <div
           className="
             grid
             grid-cols-1
-            gap-12
-
+            gap-8
+            sm:gap-10
             md:grid-cols-[1fr_1.15fr]
             md:items-stretch
             md:gap-[4vw]
@@ -455,23 +542,24 @@ export default function SocialProof() {
             className="
               flex
               flex-col
-
               md:min-h-[600px]
-
               lg:min-h-[650px]
             "
           >
+            {/* =================================================
+                IMAGE
+                ================================================= */}
+
             <div
               ref={imageRef}
               className="
                 relative
-                h-[320px]
+                h-[220px]
                 w-full
                 shrink-0
                 overflow-hidden
-
+                sm:h-[280px]
                 md:h-[400px]
-
                 lg:h-[440px]
               "
             >
@@ -488,12 +576,8 @@ export default function SocialProof() {
                   alt={featured.furnitureImageAlt}
                   fill
                   priority
-                  
-                  className="
-                  h-[400px]
-                    object-cover
-                    object-center
-                  "
+                  sizes="(max-width: 768px) 100vw, 45vw"
+                  className="object-cover object-center"
                 />
               </div>
 
@@ -509,31 +593,39 @@ export default function SocialProof() {
               />
             </div>
 
-            {/* Client card — who this piece was made for */}
+            {/* =================================================
+                CLIENT CARD
+                ================================================= */}
 
             <div
               ref={clientCreditRef}
               className="
-                mt-6
+                mt-4
                 flex
-                h-[104px]
+                h-[84px]
                 shrink-0
                 items-center
-                gap-5
+                gap-4
                 border
                 border-[#171715]/10
                 bg-white
-                p-5
+                p-4
+                sm:mt-6
+                sm:h-[104px]
+                sm:gap-5
+                sm:p-5
               "
             >
               <div
                 className="
                   relative
-                  h-16
-                  w-16
+                  h-12
+                  w-12
                   shrink-0
                   overflow-hidden
                   rounded-full
+                  sm:h-16
+                  sm:w-16
                 "
               >
                 <Image
@@ -548,11 +640,13 @@ export default function SocialProof() {
               <div>
                 <p
                   className="
-                    text-[19px]
+                    text-[16px]
                     font-bold
                     leading-tight
-                    tracking-[-0.015em]
+                    tracking-[-0.01em]
                     text-[#171715]
+                    sm:text-[19px]
+                    sm:tracking-[-0.015em]
                   "
                 >
                   {featured.clientName}
@@ -560,12 +654,15 @@ export default function SocialProof() {
 
                 <p
                   className="
-                    mt-2
-                    text-[13px]
+                    mt-1.5
+                    text-[11px]
                     font-bold
                     uppercase
-                    tracking-[0.07em]
+                    tracking-[0.06em]
                     text-[#B79B67]
+                    sm:mt-2
+                    sm:text-[13px]
+                    sm:tracking-[0.07em]
                   "
                 >
                   {featured.productName}
@@ -584,9 +681,7 @@ export default function SocialProof() {
               relative
               flex
               flex-col
-
               md:min-h-[600px]
-
               lg:min-h-[650px]
             "
           >
@@ -597,9 +692,9 @@ export default function SocialProof() {
             <div
               ref={statRef}
               className="
-                mb-10
+                mb-6
                 overflow-hidden
-
+                sm:mb-8
                 md:mb-0
               "
             >
@@ -614,11 +709,13 @@ export default function SocialProof() {
                   ref={countRef}
                   className="
                     block
-                    text-[clamp(90px,9vw,140px)]
+                    text-[clamp(56px,17vw,140px)]
                     font-bold
                     leading-[0.75]
-                    tracking-[-0.07em]
+                    tracking-[-0.04em]
                     text-[#171715]
+                    sm:text-[clamp(90px,9vw,140px)]
+                    sm:tracking-[-0.07em]
                   "
                 >
                   0
@@ -626,11 +723,13 @@ export default function SocialProof() {
 
                 <span
                   className="
-                    text-[clamp(45px,4vw,70px)]
+                    text-[clamp(28px,9vw,70px)]
                     font-bold
                     leading-none
-                    tracking-[-0.06em]
+                    tracking-[-0.04em]
                     text-[#171715]
+                    sm:text-[clamp(45px,4vw,70px)]
+                    sm:tracking-[-0.06em]
                   "
                 >
                   +
@@ -639,13 +738,16 @@ export default function SocialProof() {
 
               <span
                 className="
-                  mt-5
+                  mt-3
                   block
-                  text-[12px]
+                  text-[11px]
                   font-semibold
                   uppercase
-                  tracking-[0.07em]
+                  tracking-[0.06em]
                   text-[#8A837A]
+                  sm:mt-5
+                  sm:text-[12px]
+                  sm:tracking-[0.07em]
                 "
               >
                 Happy Homeowners
@@ -660,21 +762,22 @@ export default function SocialProof() {
               ref={quoteCardRef}
               className="
                 relative
-                mt-12
+                mt-2
                 flex
-                min-h-[400px]
+                min-h-[260px]
                 w-full
                 flex-col
                 justify-between
                 bg-[#171715]
-                p-9
-
+                p-6
+                sm:min-h-[320px]
+                sm:p-8
                 md:absolute
                 md:bottom-0
                 md:left-0
+                md:mt-0
                 md:min-h-[440px]
                 md:p-11
-
                 lg:min-h-[470px]
                 lg:p-12
               "
@@ -684,12 +787,14 @@ export default function SocialProof() {
               <div>
                 <span
                   className="
-                    mb-7
+                    mb-4
                     block
-                    text-[54px]
+                    text-[38px]
                     font-bold
                     leading-[0.5]
                     text-[#D9A441]
+                    sm:mb-7
+                    sm:text-[54px]
                   "
                 >
                   “
@@ -699,12 +804,16 @@ export default function SocialProof() {
                   ref={quoteRef}
                   className="
                     max-w-[700px]
-                    text-[clamp(26px,2.8vw,42px)]
+                    break-words
+                    text-[clamp(20px,6vw,42px)]
                     font-bold
                     uppercase
-                    leading-[1.1]
-                    tracking-[-0.03em]
+                    leading-[1.15]
+                    tracking-[-0.015em]
                     text-[#F7F5F1]
+                    sm:text-[clamp(26px,2.8vw,42px)]
+                    sm:leading-[1.1]
+                    sm:tracking-[-0.03em]
                   "
                 >
                   {featured.quote}
@@ -716,10 +825,11 @@ export default function SocialProof() {
               <div
                 ref={authorRef}
                 className="
-                  mt-10
+                  mt-6
                   flex
                   items-center
                   gap-4
+                  sm:mt-10
                 "
               >
                 <span

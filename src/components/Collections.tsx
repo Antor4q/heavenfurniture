@@ -25,7 +25,7 @@ const collections: Collection[] = [
     eyebrow: "CRAFTED FOR GATHERING",
     description:
       "Refined silhouettes, tactile materials, and considered proportions made for everyday living.",
-    image: "/heavenHero.jpg",
+    image: "/living.jpg",
     accent: "#34494A",
   },
   {
@@ -34,7 +34,7 @@ const collections: Collection[] = [
     eyebrow: "MADE FOR REST",
     description:
       "Quiet forms and natural textures designed to bring warmth, comfort, and calm into your space.",
-    image: "/heavenHero.jpg",
+    image: "/bedroom.jpg",
     accent: "#34494A",
   },
   {
@@ -43,7 +43,7 @@ const collections: Collection[] = [
     eyebrow: "DESIGNED TO CONNECT",
     description:
       "Timeless dining pieces created around long conversations, shared meals, and meaningful moments.",
-    image: "/heavenHero.jpg",
+    image: "/diningtab.jpg",
     accent: "#34494A",
   },
   {
@@ -52,7 +52,7 @@ const collections: Collection[] = [
     eyebrow: "TAILORED TO YOU",
     description:
       "Made-to-measure furniture where craftsmanship, material, and proportion come together.",
-    image: "/heavenHero.jpg",
+    image: "/bespoke.jpg",
     accent: "#34494A",
   },
 ];
@@ -69,6 +69,13 @@ export default function Collections() {
       const cards = gsap.utils.toArray<HTMLElement>(".collection-card");
 
       const isMobile = window.innerWidth < 768;
+
+      // Detect real hover capability (mouse/trackpad) vs touch-only devices
+      const canHover =
+        typeof window !== "undefined" &&
+        window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+      const cleanups: Array<() => void> = [];
 
       cards.forEach((card) => {
         const image = card.querySelector<HTMLElement>(
@@ -89,43 +96,18 @@ export default function Collections() {
 
         if (!image || !imageWrap || !hoverPanel || !hoverContent) return;
 
-        /*
-        |--------------------------------------------------------------------------
-        | INITIAL CARD WIDTH
-        |--------------------------------------------------------------------------
-        |
-        | Important:
-        | The parent wrapper already has px-20 on desktop.
-        |
-        | So we DON'T add margin-left/right here.
-        |
-        | Card starts narrower and expands to width: 100%.
-        |
-        */
-
+        /* =====================================================
+           CARD WIDTH REVEAL (responsive)
+        ===================================================== */
         gsap.set(card, {
           width: isMobile
-            ? "calc(100% - 60px)"
+            ? "calc(100% - 24px)"
+            : window.innerWidth < 1024
+            ? "calc(100% - 120px)"
             : "calc(100% - 220px)",
           marginLeft: "auto",
           marginRight: "auto",
         });
-
-        /*
-        |--------------------------------------------------------------------------
-        | CARD WIDTH EXPANSION
-        |--------------------------------------------------------------------------
-        |
-        | Final width = 100% of the px-20 container.
-        |
-        | Therefore final viewport spacing is exactly:
-        |
-        | 80px left
-        | 80px right
-        |
-        | No additional 80px margin.
-        |
-        */
 
         gsap.to(card, {
           width: "100%",
@@ -138,12 +120,9 @@ export default function Collections() {
           },
         });
 
-        /*
-        |--------------------------------------------------------------------------
-        | IMAGE PARALLAX
-        |--------------------------------------------------------------------------
-        */
-
+        /* =====================================================
+           IMAGE PARALLAX
+        ===================================================== */
         gsap.fromTo(
           image,
           {
@@ -163,12 +142,9 @@ export default function Collections() {
           }
         );
 
-        /*
-        |--------------------------------------------------------------------------
-        | IMAGE MASK REVEAL
-        |--------------------------------------------------------------------------
-        */
-
+        /* =====================================================
+           IMAGE MASK REVEAL
+        ===================================================== */
         gsap.fromTo(
           imageWrap,
           {
@@ -186,87 +162,72 @@ export default function Collections() {
           }
         );
 
-        /*
-        |--------------------------------------------------------------------------
-        | HOVER PANEL INITIAL STATE
-        |--------------------------------------------------------------------------
-        */
+        /* =====================================================
+           HOVER PANEL — behavior depends on device capability
+        ===================================================== */
+        if (canHover) {
+          // Desktop / mouse devices: hidden by default, reveal on hover
+          gsap.set(hoverPanel, { yPercent: 100 });
+          gsap.set(hoverContent, { y: 35, opacity: 0 });
 
-        gsap.set(hoverPanel, {
-          yPercent: 100,
-        });
+          const enter = () => {
+            gsap.killTweensOf([hoverPanel, hoverContent]);
 
-        gsap.set(hoverContent, {
-          y: 35,
-          opacity: 0,
-        });
+            gsap.to(hoverPanel, {
+              yPercent: 0,
+              duration: 0.65,
+              ease: "power3.out",
+            });
 
-        /*
-        |--------------------------------------------------------------------------
-        | HOVER ANIMATION
-        |--------------------------------------------------------------------------
-        */
+            gsap.to(hoverContent, {
+              y: 0,
+              opacity: 1,
+              duration: 0.55,
+              delay: 0.08,
+              ease: "power3.out",
+            });
+          };
 
-        const enter = () => {
-          gsap.killTweensOf([hoverPanel, hoverContent]);
+          const leave = () => {
+            gsap.killTweensOf([hoverPanel, hoverContent]);
 
-          gsap.to(hoverPanel, {
-            yPercent: 0,
-            duration: 0.65,
-            ease: "power3.out",
+            gsap.to(hoverContent, {
+              y: 35,
+              opacity: 0,
+              duration: 0.3,
+              ease: "power2.in",
+            });
+
+            gsap.to(hoverPanel, {
+              yPercent: 100,
+              duration: 0.5,
+              delay: 0.04,
+              ease: "power3.inOut",
+            });
+          };
+
+          imageWrap.addEventListener("mouseenter", enter);
+          imageWrap.addEventListener("mouseleave", leave);
+
+          cleanups.push(() => {
+            imageWrap.removeEventListener("mouseenter", enter);
+            imageWrap.removeEventListener("mouseleave", leave);
           });
-
-          gsap.to(hoverContent, {
-            y: 0,
-            opacity: 1,
-            duration: 0.55,
-            delay: 0.08,
-            ease: "power3.out",
-          });
-        };
-
-        const leave = () => {
-          gsap.killTweensOf([hoverPanel, hoverContent]);
-
-          gsap.to(hoverContent, {
-            y: 35,
-            opacity: 0,
-            duration: 0.3,
-            ease: "power2.in",
-          });
-
-          gsap.to(hoverPanel, {
-            yPercent: 100,
-            duration: 0.5,
-            delay: 0.04,
-            ease: "power3.inOut",
-          });
-        };
-
-        imageWrap.addEventListener("mouseenter", enter);
-        imageWrap.addEventListener("mouseleave", leave);
-
-        /*
-        |--------------------------------------------------------------------------
-        | CLEANUP
-        |--------------------------------------------------------------------------
-        */
-
-        return () => {
-          imageWrap.removeEventListener("mouseenter", enter);
-          imageWrap.removeEventListener("mouseleave", leave);
-        };
+        } else {
+          // Touch devices: panel always visible — no hover interaction exists,
+          // so content (description, button) must be reachable without a hover gesture
+          gsap.set(hoverPanel, { yPercent: 0 });
+          gsap.set(hoverContent, { y: 0, opacity: 1 });
+        }
       });
-
-      /*
-      |--------------------------------------------------------------------------
-      | REFRESH SCROLLTRIGGER
-      |--------------------------------------------------------------------------
-      */
 
       requestAnimationFrame(() => {
         ScrollTrigger.refresh();
       });
+
+      return () => {
+        cleanups.forEach((fn) => fn());
+      };
     }, section);
 
     return () => {
@@ -277,25 +238,27 @@ export default function Collections() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-[#111111] py-28"
+      className="relative overflow-hidden bg-[#171715] py-16 md:py-24 lg:py-28"
     >
       {/* ================================================================
           HEADER
       ================================================================= */}
 
-      <div className="w-full px-5 md:px-20">
+      <div className="w-full px-5 sm:px-8 md:px-20">
         <div className="w-full">
           <span
             className="
-               mb-5
-          block
-          text-[14px]
-          font-semibold
-          uppercase
-          tracking-[0.08em]
-          text-[#B79B67]
-          md:text-[16px]
-          lg:text-[18px]
+              mb-4
+              block
+              text-[12px]
+              font-semibold
+              uppercase
+              tracking-[0.08em]
+              text-[#B79B67]
+              sm:text-[13px]
+              md:mb-5
+              md:text-[16px]
+              lg:text-[18px]
             "
           >
             Why Customers Choose Them
@@ -305,14 +268,14 @@ export default function Collections() {
             className="
               w-full
               max-w-[1200px]
-              text-[54px]
+              text-[clamp(32px,8vw,110px)]
               font-bold
               uppercase
-              leading-[1.08]
-              tracking-[-0.03em]
+              leading-[1.05]
+              tracking-[-0.02em]
               text-[#F7F5F1]
-              md:text-[76px]
-              lg:text-[110px]
+              sm:leading-[1.08]
+              md:tracking-[-0.03em]
             "
           >
             Built around what matters
@@ -324,8 +287,8 @@ export default function Collections() {
           COLLECTION CARDS
       ================================================================= */}
 
-      <div className="mt-24 w-full px-5 md:px-20">
-        <div className="flex flex-col gap-10">
+      <div className="mt-14 w-full px-5 sm:px-8 md:mt-24 md:px-20">
+        <div className="flex flex-col gap-6 md:gap-10">
           {collections.map((collection) => (
             <article
               key={collection.number}
@@ -345,12 +308,13 @@ export default function Collections() {
                   collection-image-wrap
                   group
                   relative
-                  h-[58vh]
-                  min-h-[430px]
+                  h-[70vh]
+                  min-h-[380px]
                   w-full
                   overflow-hidden
                   bg-[#493B35]
-                  md:h-[64vh]
+                  sm:h-[64vh]
+                  md:h-[68vh]
                   lg:h-[72vh]
                   lg:min-h-[580px]
                 "
@@ -391,6 +355,8 @@ export default function Collections() {
 
                 {/* ======================================================
                     DEFAULT CARD CONTENT
+                    (hidden on touch devices when hover panel is
+                    always shown, to avoid duplicate title stacking)
                 ======================================================= */}
 
                 <div
@@ -403,21 +369,21 @@ export default function Collections() {
                     flex
                     items-end
                     justify-between
-                    p-6
+                    p-5
+                    sm:p-6
                     md:p-10
                     lg:p-12
                   "
                 >
                   <div>
-                   
-
                     <h3
                       className="
-                        text-[38px]
+                        text-[30px]
                         font-semibold
                         leading-none
-                        tracking-[-0.03em]
+                        tracking-[-0.02em]
                         text-white
+                        sm:text-[38px]
                         md:text-[56px]
                         lg:text-[72px]
                       "
@@ -425,13 +391,12 @@ export default function Collections() {
                       {collection.title}
                     </h3>
                   </div>
-
-                 {/* if */}
                 </div>
 
                 {/* ======================================================
                     HOVER PANEL
-                    INSIDE IMAGE
+                    Desktop: reveals on hover (JS-controlled)
+                    Touch devices: always visible (set via JS above)
                 ======================================================= */}
 
                 <div
@@ -441,9 +406,11 @@ export default function Collections() {
                     inset-x-0
                     bottom-0
                     z-20
-                    min-h-[42%]
+                    min-h-[55%]
                     overflow-hidden
                     will-change-transform
+                    sm:min-h-[46%]
+                    md:min-h-[42%]
                   "
                   style={{
                     backgroundColor: collection.accent,
@@ -454,10 +421,13 @@ export default function Collections() {
                       collection-hover-content
                       flex
                       h-full
-                      min-h-[260px]
+                      min-h-[230px]
                       flex-col
                       justify-between
-                      p-6
+                      gap-6
+                      p-5
+                      sm:min-h-[260px]
+                      sm:p-6
                       md:min-h-[280px]
                       md:p-10
                       lg:min-h-[320px]
@@ -465,29 +435,28 @@ export default function Collections() {
                     "
                   >
                     {/* TOP */}
-
                     <div className="flex items-start justify-between gap-8">
-                      <span className="text-[12px] font-medium uppercase tracking-[0.18em] text-white/65">
+                      <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-white/65 sm:text-[12px] sm:tracking-[0.18em]">
                         {collection.eyebrow}
                       </span>
-
-                     
                     </div>
 
                     {/* BOTTOM */}
-
-                    <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+                    <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between md:gap-8">
                       <div className="max-w-[720px]">
                         <h3
                           className="
-                            text-[42px]
+                            text-[30px]
                             font-semibold
                             uppercase
-                            leading-[0.95]
-                            tracking-[-0.035em]
+                            leading-[1]
+                            tracking-[-0.02em]
                             text-[#F7F5F1]
+                            sm:text-[42px]
                             md:text-[58px]
                             lg:text-[76px]
+                            lg:leading-[0.95]
+                            lg:tracking-[-0.035em]
                           "
                         >
                           {collection.title}
@@ -495,13 +464,15 @@ export default function Collections() {
 
                         <p
                           className="
-                            mt-5
+                            mt-3
                             max-w-[580px]
-                            text-[15px]
-                          
-                          
+                            text-[14px]
+                            font-medium
+                            leading-[1.4]
+                            text-[#F7F5F1]
+                            sm:mt-5
+                            sm:text-[15px]
                             md:text-[18px]
-                            font-medium leading-[1.35] text-[#F7F5F1]
                           "
                         >
                           {collection.description}
@@ -509,11 +480,10 @@ export default function Collections() {
                       </div>
 
                       {/* ARROW / LINK */}
-
-                     <AnimatedButton
-              href="/"
-              text="Explore The Collection"
-            />
+                      <AnimatedButton
+                        href="/"
+                        text="Explore The Collection"
+                      />
                     </div>
                   </div>
                 </div>
