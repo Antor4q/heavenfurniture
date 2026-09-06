@@ -6,7 +6,7 @@ Designed with a clean visual direction, smooth interactions, and GSAP-powered sc
 
 ### Live
 
-https://heaven-furniture-mart-psi.vercel.app/
+https://heavenfurniture-three.vercel.app
 
 ### Built With
 
