@@ -26,10 +26,4 @@ https://heavenfurniture-three.vercel.app
 * Premium CTA sections
 * Custom preloader
 
-### Hackathon
 
-Built for the **Racdox Hackathon**.
-
-### Author
-
-**Ahmed Antor**
