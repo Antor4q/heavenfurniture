@@ -82,7 +82,7 @@ export default function CTA() {
             <div className="mt-8 sm:mt-12 lg:mt-16">
               <AnimatedButton
                 text="WhatsApp Us"
-                href="https://wa.me/8801XXXXXXXXX"
+                href="https://wa.me/8801960-481983"
               />
             </div>
           </div>
