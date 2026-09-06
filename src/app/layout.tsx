@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/shared/Navbar";
 import SmoothScroll from "@/components/shared/smoothScroll";
 import Footer from "@/components/shared/Footer";
+import Preloader from "@/components/shared/Preloader";
 
 
 const playfair = Playfair_Display({
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${playfair.variable} ${inter.variable}`}
     >
       <body className="min-h-full flex flex-col">
+        <Preloader/>
         <SmoothScroll>
           <Navbar />
           {children}
