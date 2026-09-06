@@ -110,7 +110,7 @@ export default function Blogs() {
           heading={
     <>
      Notes on       <br />
-     Notes on living well with
+    living well with
     </>
   }
   headingColor="#F7F5F1"

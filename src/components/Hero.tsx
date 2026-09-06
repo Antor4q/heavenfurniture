@@ -23,6 +23,7 @@ export default function Hero() {
       /* =====================================================
          INITIAL STATES
       ===================================================== */
+
       gsap.set(headingRef.current, {
         y: isMobile ? 50 : 120,
       });
@@ -34,6 +35,7 @@ export default function Hero() {
       /* =====================================================
          ENTRANCE
       ===================================================== */
+
       const tl = gsap.timeline({
         defaults: { ease: "power4.out" },
         delay: 0.05,
@@ -53,8 +55,10 @@ export default function Hero() {
       );
 
       /* =====================================================
-         SCROLL PARALLAX (reduced on mobile)
+         SCROLL PARALLAX
+         Reduced on mobile
       ===================================================== */
+
       const scrollTl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -95,9 +99,14 @@ export default function Hero() {
       /* =====================================================
          RESIZE HANDLING
       ===================================================== */
+
       const handleResize = () => ScrollTrigger.refresh();
+
       window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
+
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
     }, sectionRef);
 
     return () => ctx.revert();
@@ -106,11 +115,12 @@ export default function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[100svh] overflow-hidden px-5 pt-24 text-white sm:px-8 sm:pt-28 md:px-12 lg:px-16 lg:pt-32 xl:px-20 xl:pt-36"
+      className="relative h-[70svh] overflow-hidden px-5 pt-20 text-white sm:min-h-[100svh] sm:px-8 sm:pt-28 md:px-12 lg:px-16 lg:pt-32 xl:px-20 xl:pt-36"
     >
       {/* =====================================================
           FULL BACKGROUND IMAGE
       ===================================================== */}
+
       <div
         ref={bgImageRef}
         className="absolute inset-[-6%] z-0 will-change-transform"
@@ -126,8 +136,9 @@ export default function Hero() {
       </div>
 
       {/* =====================================================
-          SCRIM / OVERLAY — keeps text readable on any image
+          SCRIM / OVERLAY
       ===================================================== */}
+
       <div
         className="absolute inset-0 z-10"
         style={{
@@ -135,42 +146,41 @@ export default function Hero() {
             "linear-gradient(90deg, rgba(15,10,5,0.8) 0%, rgba(15,10,5,0.55) 40%, rgba(15,10,5,0.25) 70%, rgba(15,10,5,0.05) 100%)",
         }}
       />
+
       <div className="absolute inset-x-0 bottom-0 z-10 h-[40%] bg-gradient-to-t from-black/60 to-transparent md:h-[32%]" />
 
-      {/* Top overlay — darkens nav bar area, esp. top-right */}
+      {/* Top overlay */}
       <div className="absolute inset-x-0 top-0 z-10 h-[120px] bg-gradient-to-b from-black/60 via-black/25 to-transparent sm:h-[150px] md:h-[180px]" />
 
       {/* =====================================================
           CONTENT LAYOUT
-          Mobile/Tablet (below lg): stacked, packed toward bottom
-          Desktop (lg+): ORIGINAL layout — heading left (vertically
-          centered), content right with spacer
+          Mobile: 70svh + content slightly higher
+          Tablet/Desktop: Original layout
       ===================================================== */}
-      <div className="relative z-20 flex h-full min-h-[calc(100svh-6rem)] flex-col justify-end gap-6 pb-10 sm:min-h-[calc(100svh-7rem)] sm:gap-8 sm:pb-14 lg:min-h-0 lg:flex-row lg:items-center lg:justify-between lg:gap-0 lg:pb-0">
+
+      <div className="relative z-20 flex h-full flex-col justify-end gap-4 pb-14 sm:min-h-[calc(100svh-7rem)] sm:gap-8 sm:pb-14 lg:min-h-0 lg:flex-row lg:items-center lg:justify-between lg:gap-0 lg:pb-0">
         {/* ===================================================
-            LEFT SIDE — HEADING (Playfair Display)
+            LEFT SIDE — HEADING
         =================================================== */}
+
         <div className="flex flex-col justify-end lg:justify-center">
           <h1
             ref={headingRef}
-            className=" text-[#F4EEE3] font-bold uppercase tracking-normal
-                       text-[42px] leading-[1.05]
-                       font-serif
-                       sm:text-[64px]
-                       md:text-[88px]
-                       lg:text-[90px] lg:leading-[0.95]
-                       xl:text-[180px] xl:leading-40"
-            style={{ textShadow: "0 4px 30px rgba(0,0,0,0.35)" }}
+            className="font-serif text-[38px] font-bold uppercase leading-[1.02] tracking-normal text-[#F4EEE3] sm:text-[64px] md:text-[88px] lg:text-[90px] lg:leading-[0.95] xl:text-[180px] xl:leading-40"
+            style={{
+              textShadow: "0 4px 30px rgba(0,0,0,0.35)",
+            }}
           >
             Elevate the way you live.
           </h1>
         </div>
 
         {/* ===================================================
-            RIGHT SIDE — COPY + CTA (Inter, no entrance animation)
+            RIGHT SIDE — COPY + CTA
         =================================================== */}
+
         <div className="w-full lg:w-auto">
-          {/* Spacer — original desktop-only offset */}
+          {/* Desktop spacer */}
           <div className="hidden lg:block lg:h-[400px] lg:w-[420px]" />
 
           <div
@@ -178,10 +188,7 @@ export default function Hero() {
             className="max-w-full sm:max-w-[440px] lg:max-w-[500px]"
           >
             <p
-              className="my-4 text-[15px] font-medium leading-[1.4] text-[#F4EEE3]
-                         sm:text-[16px]
-                         md:my-5 md:text-[18px]
-                         lg:text-[20px] lg:leading-[1.35]"
+              className="my-3 text-[15px] font-medium leading-[1.4] text-[#F4EEE3] sm:my-4 sm:text-[16px] md:my-5 md:text-[18px] lg:text-[20px] lg:leading-[1.35]"
             >
               Bespoke furniture for living, bedroom, dining, office, and
               every space in between — designed around your taste, space,
