@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRef, useState } from "react";
 import gsap from "gsap";
+import SectionHeading from "./shared/SectionHeading";
 
 const trustPoints = [
   {
@@ -10,7 +11,7 @@ const trustPoints = [
     title: "FREE DESIGN CONSULTATION",
     description:
       "Get expert guidance from our design team to create furniture that fits your space, style, and everyday needs.",
-    image: "/heavenHero.jpg",
+    image: "/gall4.webp",
   },
   {
     number: "02",
@@ -24,35 +25,35 @@ const trustPoints = [
     title: "PREMIUM MATERIALS & CRAFTSMANSHIP",
     description:
       "We use premium wood and carefully selected materials, brought together by skilled in-house craftsmen.",
-    image: "/craftsmanship.jpg",
+    image: "/fur6.jpg",
   },
   {
     number: "04",
     title: "LARGE PHYSICAL SHOWROOM",
     description:
       "Visit our large showroom in Agrabad, Chattogram and experience the quality, materials, finishes, and craftsmanship in person.",
-    image: "/showroom.jpg",
+    image: "/showroom.png",
   },
   {
     number: "05",
     title: "DELIVERY & INSTALLATION INCLUDED",
     description:
       "From our workshop to your home, we take care of delivery and installation so everything arrives ready for your space.",
-    image: "/delivery.jpg",
+    image: "/fur4.jpg",
   },
   {
     number: "06",
     title: "EASY PAYMENT OPTIONS",
     description:
       "Flexible and convenient payment options make it easier to bring your custom furniture vision to life.",
-    image: "/payment.jpg",
+    image: "/gall3.webp",
   },
   {
     number: "07",
     title: "TRUSTED BY HUNDREDS OF HAPPY HOMEOWNERS",
     description:
       "Hundreds of homeowners have trusted us to create furniture that feels personal, lasting, and made for their home.",
-    image: "/customers.jpg",
+    image: "/fur3.jpg",
   },
 ];
 
@@ -126,42 +127,16 @@ export default function WhyChooseHeaven() {
       ========================================== */}
 
       <div className="w-full">
-        <span
-          className="
-            mb-5
-            block
-            text-[14px]
-            font-semibold
-            uppercase
-            tracking-[0.08em]
-            text-[#B79B67]
-            md:text-[16px]
-            lg:text-[18px]
-          "
-        >
-          Why Customers Choose Us
-        </span>
-
-        <h2
-          className="
-            mt-5
-            break-words
-            text-[clamp(34px,10vw,110px)]
-            font-bold
-            uppercase
-            leading-[0.95]
-            tracking-[-0.03em]
-            text-[#171715]
-            sm:leading-[0.9]
-            md:text-[clamp(52px,7vw,110px)]
-            md:leading-[0.88]
-            md:tracking-[-0.055em]
-          "
-        >
-          Built around
-          <br />
-          what matters
-        </h2>
+        <SectionHeading
+          label="why us"
+          heading={
+            <>
+              Built around <br/>
+what matters
+            </>
+          }
+         
+        />
       </div>
 
       {/* =========================================

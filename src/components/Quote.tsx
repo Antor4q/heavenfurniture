@@ -125,7 +125,7 @@ export default function Quote() {
             "
           >
             <Image
-              src="/gall3.webp"
+              src="/abulkalam.jpg"
               alt="Abul Kalam Bhuiyan, Managing Director"
               fill
               sizes="(max-width: 640px) 145px, (max-width: 768px) 180px, 220px"

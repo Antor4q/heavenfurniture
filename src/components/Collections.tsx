@@ -6,6 +6,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import AnimatedButton from "./shared/AnimatedButton";
+import SectionHeading from "./shared/SectionHeading";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -237,6 +238,7 @@ export default function Collections() {
 
   return (
     <section
+    id="collections"
       ref={sectionRef}
       className="relative overflow-hidden bg-[#171715] py-16 md:py-24 lg:py-28"
     >
@@ -245,42 +247,16 @@ export default function Collections() {
       ================================================================= */}
 
       <div className="w-full px-5 sm:px-8 md:px-20">
-        <div className="w-full">
-          <span
-            className="
-              mb-4
-              block
-              text-[12px]
-              font-semibold
-              uppercase
-              tracking-[0.08em]
-              text-[#B79B67]
-              sm:text-[13px]
-              md:mb-5
-              md:text-[16px]
-              lg:text-[18px]
-            "
-          >
-            Why Customers Choose Them
-          </span>
-
-          <h2
-            className="
-              w-full
-              max-w-[1200px]
-              text-[clamp(32px,8vw,110px)]
-              font-bold
-              uppercase
-              leading-[1.05]
-              tracking-[-0.02em]
-              text-[#F7F5F1]
-              sm:leading-[1.08]
-              md:tracking-[-0.03em]
-            "
-          >
-            Built around what matters
-          </h2>
-        </div>
+        <SectionHeading label="Our Collection"
+          heading={
+    <>
+     Pieces with a 
+      <br />
+     lasting presence.
+    </>
+  }
+  headingColor="#F7F5F1"
+        />
       </div>
 
       {/* ================================================================
@@ -378,6 +354,7 @@ export default function Collections() {
                   <div>
                     <h3
                       className="
+                      font-serif
                         text-[30px]
                         font-semibold
                         leading-none
@@ -447,6 +424,7 @@ export default function Collections() {
                         <h3
                           className="
                             text-[30px]
+                            font-serif
                             font-semibold
                             uppercase
                             leading-[1]

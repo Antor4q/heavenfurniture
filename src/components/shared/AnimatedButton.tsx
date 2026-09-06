@@ -1,8 +1,12 @@
+
 "use client";
 
 import Link from "next/link";
 import { useRef } from "react";
 import gsap from "gsap";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+
+gsap.registerPlugin(ScrollToPlugin);
 
 interface AnimatedButtonProps {
   href: string;
@@ -12,6 +16,10 @@ interface AnimatedButtonProps {
 const AnimatedButton = ({ href, text }: AnimatedButtonProps) => {
   const defaultStateRef = useRef<HTMLSpanElement>(null);
   const hoverStateRef = useRef<HTMLSpanElement>(null);
+
+  // =====================================================
+  // HOVER IN
+  // =====================================================
 
   const handleMouseEnter = () => {
     const defaultState = defaultStateRef.current;
@@ -39,9 +47,13 @@ const AnimatedButton = ({ href, text }: AnimatedButtonProps) => {
         opacity: 1,
         duration: 0.5,
         ease: "power3.out",
-      },
+      }
     );
   };
+
+  // =====================================================
+  // HOVER OUT
+  // =====================================================
 
   const handleMouseLeave = () => {
     const defaultState = defaultStateRef.current;
@@ -66,49 +78,140 @@ const AnimatedButton = ({ href, text }: AnimatedButtonProps) => {
     });
   };
 
+  // =====================================================
+  // SMOOTH SECTION NAVIGATION
+  // =====================================================
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Only handle same-page hash links
+    if (!href.startsWith("#")) return;
+
+    const target = document.querySelector(href);
+
+    if (!target) return;
+
+    e.preventDefault();
+
+    // Stop any previous scroll animation
+    gsap.killTweensOf(window);
+
+    // Update URL without jumping
+    window.history.pushState(null, "", href);
+
+    // Smooth cinematic scroll
+    gsap.to(window, {
+      duration: 2.2,
+      scrollTo: {
+        y: target,
+        offsetY: 0,
+      },
+      ease: "power2.inOut",
+    });
+  };
+
   return (
     <Link
       href={href}
+      onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className="
         relative
         inline-flex
-     
-        min-w-[250px]
+        w-full
+        max-w-[250px]
+        min-w-0
         items-center
         justify-center
         overflow-hidden
         bg-[#2C241D]
-        px-6
-        py-7
+        px-5
+        py-5
         text-[#F5F2EC]
+
+        sm:px-6
+        sm:py-6
+
+        md:min-w-[250px]
+        md:px-6
+        md:py-7
       "
     >
-      {/* Initial */}
+      {/* =================================================
+          DEFAULT STATE
+      ================================================= */}
+
       <span
         ref={defaultStateRef}
-        className="absolute inline-flex items-center gap-5"
+        className="
+          absolute
+          inline-flex
+          items-center
+          gap-3
+          sm:gap-4
+          md:gap-5
+        "
       >
-        <span className="whitespace-nowrap text-[17px] font-bold">
+        <span
+          className="
+            whitespace-nowrap
+            text-[14px]
+            font-bold
+            sm:text-[15px]
+            md:text-[17px]
+          "
+        >
           {text}
         </span>
 
-        <span className="text-[23px] leading-none">
+        <span
+          className="
+            text-[20px]
+            leading-none
+            sm:text-[21px]
+            md:text-[23px]
+          "
+        >
           ⟶
         </span>
       </span>
 
-      {/* Hover */}
+      {/* =================================================
+          HOVER STATE
+      ================================================= */}
+
       <span
         ref={hoverStateRef}
-        className="absolute inline-flex items-center gap-5 opacity-0"
+        className="
+          absolute
+          inline-flex
+          items-center
+          gap-3
+          opacity-0
+          sm:gap-4
+          md:gap-5
+        "
       >
-        <span className="text-[23px] leading-none">
+        <span
+          className="
+            text-[20px]
+            leading-none
+            sm:text-[21px]
+            md:text-[23px]
+          "
+        >
           ⟶
         </span>
 
-        <span className="whitespace-nowrap text-[17px] font-bold">
+        <span
+          className="
+            whitespace-nowrap
+            text-[14px]
+            font-bold
+            sm:text-[15px]
+            md:text-[17px]
+          "
+        >
           {text}
         </span>
       </span>
@@ -117,3 +220,4 @@ const AnimatedButton = ({ href, text }: AnimatedButtonProps) => {
 };
 
 export default AnimatedButton;
+

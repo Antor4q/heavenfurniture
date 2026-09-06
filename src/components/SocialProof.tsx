@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import SectionHeading from "./shared/SectionHeading";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,36 +28,36 @@ type FeaturedClient = {
 
 const FEATURED_CLIENTS: FeaturedClient[] = [
   {
-    furnitureImage: "/heavenHero.jpg",
+    furnitureImage: "/social1.jpg",
     furnitureImageAlt:
       "Custom living room set delivered to Rezwana Karim",
     clientImage: "/gall1.webp",
     clientName: "Rezwana Karim",
     productName: "Custom Oak Living Set",
     quote:
-      "The furniture feels like it was made specifically for our home.",
+      "The furniture feels like it was made specifically for our home. Every detail, from the proportions to the finish, feels thoughtfully considered.",
     quoteAuthorRole: "Homeowner, Gulshan",
   },
   {
-    furnitureImage: "/heavenHero.jpg",
+    furnitureImage: "/social2.jpg",
     furnitureImageAlt:
       "Bespoke dining set delivered to Farhan Ahmed",
     clientImage: "/gall2.webp",
     clientName: "Farhan Ahmed",
     productName: "Bespoke Walnut Dining Set",
     quote:
-      "It feels like it was always meant to be in this room.",
+      "It feels like it was always meant to be in this room. The craftsmanship, finish, and attention to detail are exceptional.",
     quoteAuthorRole: "Homeowner, Baridhara",
   },
   {
-    furnitureImage: "/heavenHero.jpg",
+    furnitureImage: "/social3.jpg",
     furnitureImageAlt:
       "Custom bedroom suite delivered to Nusrat Jahan",
     clientImage: "/gall3.webp",
     clientName: "Nusrat Jahan",
     productName: "Custom Bedroom Suite",
     quote:
-      "Still looks new, months later. That's rare in this market.",
+      "Still looks new, months later. The quality is exceptional, and you can genuinely feel the care that went into every piece.",
     quoteAuthorRole: "Homeowner, Banani",
   },
 ];
@@ -226,7 +227,6 @@ export default function SocialProof() {
       const quoteCard = quoteCardRef.current;
 
       if (
-        !heading ||
         !image ||
         !imageInner ||
         !rightContent ||
@@ -241,16 +241,14 @@ export default function SocialProof() {
       // COUNTER
       // =====================================================
 
-      gsap.set(count, {
-        textContent: "0",
-      });
+      count.textContent = "0";
 
       const counter = {
         value: 0,
       };
 
       gsap.to(counter, {
-        value: 300,
+        value: 100,
 
         duration: 2,
 
@@ -302,28 +300,30 @@ export default function SocialProof() {
       // HEADING PARALLAX
       // =====================================================
 
-      gsap.fromTo(
-        heading,
-        {
-          y: 20,
-        },
-        {
-          y: -25,
-
-          ease: "none",
-
-          scrollTrigger: {
-            trigger: section,
-
-            start: "top bottom",
-            end: "bottom top",
-
-            scrub: 1.2,
-
-            invalidateOnRefresh: true,
+      if (heading) {
+        gsap.fromTo(
+          heading,
+          {
+            y: 20,
           },
-        }
-      );
+          {
+            y: -25,
+
+            ease: "none",
+
+            scrollTrigger: {
+              trigger: section,
+
+              start: "top bottom",
+              end: "bottom top",
+
+              scrub: 1.2,
+
+              invalidateOnRefresh: true,
+            },
+          }
+        );
+      }
 
       // =====================================================
       // STAT PARALLAX
@@ -477,45 +477,18 @@ export default function SocialProof() {
             md:mb-[6vw]
           "
         >
-          <span
-            ref={labelRef}
-            className="
-              mb-4
-              block
-              text-[15px]
-              font-semibold
-              uppercase
-              tracking-[-0.005em]
-              text-[#8A837A]
-              sm:mb-6
-              sm:text-[20px]
-              sm:tracking-[-0.01em]
-            "
-          >
-            Social Proof
-          </span>
-
-          <h2
-            ref={headingRef}
-            className="
-              w-full
-              break-words
-              text-[clamp(32px,9vw,110px)]
-              font-bold
-              uppercase
-              leading-[0.98]
-              tracking-[-0.025em]
-              text-[#171715]
-              sm:leading-[0.9]
-              md:text-[clamp(60px,8vw,110px)]
-              md:leading-[0.88]
-              md:tracking-[-0.055em]
-            "
-          >
-            Homes That
-            <br />
-            Chose Heaven.
-          </h2>
+        <SectionHeading
+          label="Social Proof
+"
+          heading={
+            <>
+              Homes That
+ <br/>
+Chose Heaven.
+            </>
+          }
+         
+        />
         </div>
 
         {/* =================================================
@@ -709,6 +682,7 @@ export default function SocialProof() {
                   ref={countRef}
                   className="
                     block
+                    font-serif
                     text-[clamp(56px,17vw,140px)]
                     font-bold
                     leading-[0.75]
@@ -723,6 +697,7 @@ export default function SocialProof() {
 
                 <span
                   className="
+                  font-serif
                     text-[clamp(28px,9vw,70px)]
                     font-bold
                     leading-none

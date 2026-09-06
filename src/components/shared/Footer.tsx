@@ -1,345 +1,376 @@
 
-export default function Footer() {
+"use client";
+
+import { useLayoutEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+function FooterLink({
+  href,
+  children,
+  external = false,
+  className = "",
+}: {
+  href: string;
+  children: React.ReactNode;
+  external?: boolean;
+  className?: string;
+}) {
   return (
-    <div className="overflow-hidden bg-[#171715] px-6 py-28 md:px-10 lg:px-20">
+    <a
+      href={href}
+      {...(external
+        ? {
+            target: "_blank",
+            rel: "noopener noreferrer",
+          }
+        : {})}
+      className={`
+        group
+        relative
+        flex
+        items-center
+        text-[15px]
+        font-medium
+        text-[#F7F5F1]/70
+        transition-colors
+        duration-300
+        hover:text-[#F7F5F1]
+        sm:text-[16px]
+        lg:text-[17px]
+        ${className}
+      `}
+    >
+      <span
+        className="
+          absolute
+          left-0
+          h-1.5
+          w-1.5
+          -translate-x-3
+          rounded-full
+          bg-[#B79B67]
+          opacity-0
+          transition-all
+          duration-300
+          group-hover:translate-x-0
+          group-hover:opacity-100
+        "
+      />
 
-      {/* MAIN FOOTER GRID */}
+      <span
+        className="
+          transition-transform
+          duration-300
+          group-hover:translate-x-4
+        "
+      >
+        {children}
+      </span>
+    </a>
+  );
+}
 
-      <div className="grid grid-cols-1 gap-28 lg:grid-cols-3">
+export default function Footer() {
+  const footerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const brandRef = useRef<HTMLHeadingElement>(null);
 
-        {/* =====================================================
-            QUOTE
-        ===================================================== */}
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      // Initial states
+      gsap.set(contentRef.current, {
+        y: 70,
+        opacity: 0,
+      });
 
-        <div className="lg:col-span-1">
+      gsap.set(brandRef.current, {
+        yPercent: 100,
+        opacity: 0,
+      });
 
-          <p
-            className="
-              max-w-[700px]
-              text-[30px]
-              font-bold
-              uppercase
-              leading-[1.06]
-              tracking-[-0.035em]
-              text-[#F7F5F1]
-            "
-          >
-            Every piece we create is designed to bring
-            lasting elegance into the homes of our clients.
-          </p>
+      // Main footer reveal
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: footerRef.current,
+          start: "top 85%",
+          end: "top 35%",
+          scrub: 1.2,
+        },
+      });
 
-          <p
-            className="
-              mt-10
-              text-[18px]
-              font-medium
-              leading-[1.5]
-              tracking-[-0.035em]
-              text-[#F7F5F1]/40
-            "
-          >
-            © 2026 Heaven Furniture Mart
-          </p>
+      tl.to(contentRef.current, {
+        y: 0,
+        opacity: 1,
+        ease: "power3.out",
+        duration: 1,
+      }).to(
+        brandRef.current,
+        {
+          yPercent: 0,
+          opacity: 1,
+          ease: "power4.out",
+          duration: 1.2,
+        },
+        "-=0.55"
+      );
+    }, footerRef);
 
-        </div>
+    return () => ctx.revert();
+  }, []);
 
+  return (
+    <div
+      ref={footerRef}
+      className="
+        overflow-hidden
+        bg-[#171715]
+        px-5
+        py-16
+        sm:px-8
+        sm:py-20
+        md:px-10
+        md:py-24
+        lg:px-20
+        lg:py-28
+      "
+    >
+      {/* =====================================================
+          FOOTER CONTENT
+      ===================================================== */}
 
-        {/* =====================================================
-            CONTACT / LINKS / SOCIAL
-        ===================================================== */}
-
+      <div ref={contentRef}>
+        {/* MAIN FOOTER GRID */}
         <div
           className="
-          
-            border-b
-            border-[#F7F5F1]/10
-            lg:col-span-2
+            grid
+            grid-cols-1
+            gap-16
+            sm:gap-20
+            lg:grid-cols-3
+            lg:gap-28
           "
         >
+          {/* =====================================================
+              QUOTE
+          ===================================================== */}
+
+          <div className="lg:col-span-1">
+            <p
+              className="
+                max-w-[700px]
+                text-[22px]
+                font-bold
+                uppercase
+                leading-[1.1]
+                tracking-[-0.02em]
+                text-[#F7F5F1]
+                sm:text-[26px]
+                md:text-[28px]
+                lg:text-[30px]
+                lg:leading-[1.06]
+                lg:tracking-[-0.035em]
+              "
+            >
+              Every piece we create is designed to bring
+              lasting elegance into the homes of our clients.
+            </p>
+
+            <p
+              className="
+                mt-6
+                text-[15px]
+                font-medium
+                leading-[1.5]
+                tracking-[-0.02em]
+                text-[#F7F5F1]/40
+                sm:mt-8
+                sm:text-[17px]
+                lg:mt-10
+                lg:text-[18px]
+                lg:tracking-[-0.035em]
+              "
+            >
+              © 2026 Heaven Furniture Mart
+            </p>
+          </div>
+
+          {/* =====================================================
+              CONTACT / LINKS / SOCIAL
+          ===================================================== */}
 
           <div
             className="
-              flex
-              flex-col
-              justify-between
-              gap-12
-              pb-16
-              md:flex-row
-              md:gap-10
+              border-b
+              border-[#F7F5F1]/10
+              lg:col-span-2
             "
           >
+            <div
+              className="
+                flex
+                flex-col
+                justify-between
+                gap-10
+                pb-12
+                sm:gap-12
+                sm:pb-14
+                md:flex-row
+                md:gap-8
+                lg:pb-16
+              "
+            >
+              {/* =================================================
+                  CONTACT
+              ================================================= */}
 
-            {/* =================================================
-                CONTACT
-            ================================================= */}
-
-            <div className="flex flex-col">
-
-              <span
-                className="
-                  mb-5
-                  text-[11px]
-                  font-semibold
-                  uppercase
-                  text-[#B79B67]
-                "
-              >
-                Contact
-              </span>
-
-              <a
-                href="tel:+8801960481983"
-                className="
-                  text-[17px]
-                  font-medium
-                  text-[#F7F5F1]/70
-                  transition-colors
-                  duration-300
-                  hover:text-[#F7F5F1]
-                "
-              >
-                +880 1960-481983
-              </a>
-
-              <a
-                href="mailto:heavenfurnituremart@gmail.com"
-                className="
-                  mt-2
-                  text-[17px]
-                  font-medium
-                  text-[#F7F5F1]/70
-                  transition-colors
-                  duration-300
-                  hover:text-[#F7F5F1]
-                "
-              >
-                heavenfurnituremart@gmail.com
-              </a>
-
-              <p
-                className="
-                  mt-6
-                  text-[14px]
-                  leading-[1.5]
-                  text-[#F7F5F1]/35
-                "
-              >
-                Agrabad Access Road
-                <br />
-                Chattogram, Bangladesh
-              </p>
-
-            </div>
-
-
-            {/* =================================================
-                LINKS
-            ================================================= */}
-
-            <div className="flex flex-col">
-
-              <span
-                className="
-                  mb-5
-                  text-[11px]
-                  font-semibold
-                  uppercase
-                  text-[#B79B67]
-                "
-              >
-                Explore
-              </span>
-
-              <a
-                href="#collections"
-                className="
-                  text-[17px]
-                  font-medium
-                  text-[#F7F5F1]/70
-                  transition-colors
-                  duration-300
-                  hover:text-[#F7F5F1]
-                "
-              >
-                Collections
-              </a>
-
-              <a
-                href="#bespoke"
-                className="
-                  mt-2
-                  text-[17px]
-                  font-medium
-                  text-[#F7F5F1]/70
-                  transition-colors
-                  duration-300
-                  hover:text-[#F7F5F1]
-                "
-              >
-                Bespoke
-              </a>
-
-              <a
-                href="#about"
-                className="
-                  mt-2
-                  text-[17px]
-                  font-medium
-                  text-[#F7F5F1]/70
-                  transition-colors
-                  duration-300
-                  hover:text-[#F7F5F1]
-                "
-              >
-                About
-              </a>
-
-            </div>
-
-
-            {/* =================================================
-                SOCIAL
-            ================================================= */}
-
-            <div className="flex flex-col">
-
-              <span
-                className="
-                  mb-5
-                  text-[11px]
-                  font-semibold
-                  uppercase
-                  text-[#B79B67]
-                "
-              >
-                Follow
-              </span>
-
-              <a
-                href="https://www.facebook.com/HeavenFurnitureMart"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="
-                  group
-                  flex
-                  items-center
-                  gap-2
-                  text-[17px]
-                  font-medium
-                  text-[#F7F5F1]/70
-                  transition-colors
-                  duration-300
-                  hover:text-[#F7F5F1]
-                "
-              >
-                Facebook
-
+              <div className="flex flex-col">
                 <span
                   className="
-                    transition-transform
-                    duration-300
-                    group-hover:translate-x-1
-                    group-hover:-translate-y-1
+                    mb-4
+                    text-[10px]
+                    font-semibold
+                    uppercase
+                    text-[#B79B67]
+                    sm:mb-5
+                    sm:text-[11px]
                   "
                 >
-                  ↗
+                  Contact
                 </span>
-              </a>
 
-              <a
-                href="https://www.instagram.com/heaven_furniture_ltd"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="
-                  group
-                  mt-2
-                  flex
-                  items-center
-                  gap-2
-                  text-[17px]
-                  font-medium
-                  text-[#F7F5F1]/70
-                  transition-colors
-                  duration-300
-                  hover:text-[#F7F5F1]
-                "
-              >
-                Instagram
+                <FooterLink href="tel:+8801960481983">
+                  +880 1960-481983
+                </FooterLink>
 
+                <FooterLink
+                  href="mailto:heavenfurnituremart@gmail.com"
+                  className="mt-3"
+                >
+                  heavenfurnituremart@gmail.com
+                </FooterLink>
+
+                <p
+                  className="
+                    mt-6
+                    text-[13px]
+                    leading-[1.5]
+                    text-[#F7F5F1]/35
+                    sm:text-[14px]
+                  "
+                >
+                  Agrabad Access Road
+                  <br />
+                  Chattogram, Bangladesh
+                </p>
+              </div>
+
+              {/* =================================================
+                  LINKS
+              ================================================= */}
+
+              <div className="flex flex-col">
                 <span
                   className="
-                    transition-transform
-                    duration-300
-                    group-hover:translate-x-1
-                    group-hover:-translate-y-1
+                    mb-4
+                    text-[10px]
+                    font-semibold
+                    uppercase
+                    text-[#B79B67]
+                    sm:mb-5
+                    sm:text-[11px]
                   "
                 >
-                  ↗
+                  Explore
                 </span>
-              </a>
 
-              <a
-                href="https://www.youtube.com/@HeavenFurnitureMart"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="
-                  group
-                  mt-2
-                  flex
-                  items-center
-                  gap-2
-                  text-[17px]
-                  font-medium
-                  text-[#F7F5F1]/70
-                  transition-colors
-                  duration-300
-                  hover:text-[#F7F5F1]
-                "
-              >
-                YouTube
+                <FooterLink href="#collections">
+                  Collections
+                </FooterLink>
 
+                <FooterLink href="#bespoke" className="mt-3">
+                  Bespoke
+                </FooterLink>
+
+                <FooterLink href="#about" className="mt-3">
+                  About
+                </FooterLink>
+              </div>
+
+              {/* =================================================
+                  SOCIAL
+              ================================================= */}
+
+              <div className="flex flex-col">
                 <span
                   className="
-                    transition-transform
-                    duration-300
-                    group-hover:translate-x-1
-                    group-hover:-translate-y-1
+                    mb-4
+                    text-[10px]
+                    font-semibold
+                    uppercase
+                    text-[#B79B67]
+                    sm:mb-5
+                    sm:text-[11px]
                   "
                 >
-                  ↗
+                  Follow
                 </span>
-              </a>
 
+                <FooterLink
+                  href="https://www.facebook.com/HeavenFurnitureMart"
+                  external
+                >
+                  Facebook
+                </FooterLink>
+
+                <FooterLink
+                  href="https://www.instagram.com/heaven_furniture_ltd"
+                  external
+                  className="mt-3"
+                >
+                  Instagram
+                </FooterLink>
+
+                <FooterLink
+                  href="https://www.youtube.com/@HeavenFurnitureMart"
+                  external
+                  className="mt-3"
+                >
+                  YouTube
+                </FooterLink>
+              </div>
             </div>
-
           </div>
-
         </div>
-
       </div>
-
 
       {/* =====================================================
           HUGE BRAND
       ===================================================== */}
 
       <h1
+        ref={brandRef}
         className="
-          mt-20
-          -mb-14
+          mt-14
+          -mb-6
           whitespace-nowrap
           font-serif
-          text-[clamp(100px,24vw,370px)]
+          text-[clamp(60px,24vw,430px)]
           font-bold
           uppercase
           leading-[0.7]
           tracking-normal
           text-[#fff]
+          sm:mt-16
+          sm:-mb-10
+          lg:mt-20
+          lg:-mb-14
         "
       >
         HEAVEN
       </h1>
-
     </div>
   );
 }

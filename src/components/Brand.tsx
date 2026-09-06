@@ -46,11 +46,6 @@ export default function Brand() {
 
       const textWords = text.querySelectorAll<HTMLElement>(".brand-word");
 
-      /* =====================================================
-         RESPONSIVE ANIMATION SETUP (matchMedia)
-         Desktop/tablet: full parallax + overlap
-         Mobile: lighter movement, no overlap jump risk
-      ===================================================== */
       const mm = gsap.matchMedia();
 
       mm.add(
@@ -192,6 +187,7 @@ export default function Brand() {
 
   return (
     <section
+    id="about"
       ref={sectionRef}
       className="
         relative
@@ -206,11 +202,7 @@ export default function Brand() {
         lg:py-32
       "
     >
-      {/* =====================================================
-          LABEL
-          Outer (labelWrap) = entrance animation
-          Inner (label span) = parallax animation
-      ===================================================== */}
+    
       <div ref={labelWrapRef} className="mb-5 md:mb-7">
         <span
           ref={labelRef}
@@ -220,7 +212,7 @@ export default function Brand() {
             font-semibold
             uppercase
             tracking-[0.08em]
-            text-[#8A837A]
+            text-[#B79B67]
             sm:text-[14px]
             md:text-[16px]
             lg:text-[18px]
@@ -240,6 +232,7 @@ export default function Brand() {
           z-20
           w-full
           max-w-[1320px]
+          font-serif
           text-[clamp(32px,7vw,78px)]
           font-bold
           uppercase

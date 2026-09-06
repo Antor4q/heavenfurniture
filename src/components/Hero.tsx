@@ -153,12 +153,13 @@ export default function Hero() {
         <div className="flex flex-col justify-end lg:justify-center">
           <h1
             ref={headingRef}
-            className="font-sans text-[#F4EEE3] font-bold uppercase tracking-normal
+            className=" text-[#F4EEE3] font-bold uppercase tracking-normal
                        text-[42px] leading-[1.05]
+                       font-serif
                        sm:text-[64px]
                        md:text-[88px]
-                       lg:text-[130px] lg:leading-[0.95]
-                       xl:text-[160px] xl:leading-36"
+                       lg:text-[90px] lg:leading-[0.95]
+                       xl:text-[180px] xl:leading-40"
             style={{ textShadow: "0 4px 30px rgba(0,0,0,0.35)" }}
           >
             Elevate the way you live.
@@ -187,7 +188,7 @@ export default function Hero() {
               and lifestyle.
             </p>
 
-            <AnimatedButton href="/" text="Explore The Collection" />
+            <AnimatedButton href="/#contact" text="Get A Quote" />
           </div>
         </div>
       </div>

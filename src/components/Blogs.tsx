@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import SectionHeading from "./shared/SectionHeading";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -21,28 +22,28 @@ const blogs: Blog[] = [
     category: "Interior",
     title: "Designing a Living Room That Feels Like Home",
     meta: "5 min read",
-    image: "/heavenHero.jpg",
+    image: "/liv.jpg",
     href: "/blog/designing-a-living-room-that-feels-like-home",
   },
   {
     category: "Materials",
     title: "The Beauty of Natural Wood",
     meta: "4 min read",
-    image: "/heavenHero.jpg",
+    image: "/fur4.jpg",
     href: "/blog/the-beauty-of-natural-wood",
   },
   {
     category: "Bespoke",
     title: "Why Custom Furniture Matters",
     meta: "6 min read",
-    image: "/heavenHero.jpg",
+    image: "/bespoke.jpg",
     href: "/blog/why-custom-furniture-matters",
   },
   {
     category: "Craft",
     title: "Inside Our Workshop: How a Piece Is Made",
     meta: "5 min read",
-    image: "/heavenHero.jpg",
+    image: "/be2.png",
     href: "/blog/inside-our-workshop-how-a-piece-is-made",
   },
 ];
@@ -104,12 +105,16 @@ export default function Blogs() {
     >
       {/* HEADER */}
       <div className="w-full">
-        <span className="mb-4 block text-[13px] font-semibold uppercase tracking-[0.08em] text-[#B79B67] sm:mb-5 sm:text-[14px] md:text-[16px] lg:text-[18px]">
-          the journal
-        </span>
-        <h2 className="w-full max-w-[1200px] break-words text-[clamp(32px,9vw,110px)] font-bold uppercase leading-[1.05] tracking-[-0.02em] text-[#F7F5F1] sm:leading-[1.08] md:text-[clamp(54px,7.5vw,110px)] md:tracking-[-0.03em]">
-          Notes on living well with
-        </h2>
+        <SectionHeading label="the journal
+"
+          heading={
+    <>
+     Notes on       <br />
+     Notes on living well with
+    </>
+  }
+  headingColor="#F7F5F1"
+        />
       </div>
 
       {/* TOP ROW — featured (big, 60%) + small (40%), inside container */}

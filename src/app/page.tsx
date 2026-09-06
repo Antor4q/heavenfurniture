@@ -26,7 +26,7 @@ export default function Home() {
       <Collections/>
       <Bespoke/>
       <WhyChooseHeaven/>
-      {/* <BespokeMaterialShowcase/> */}
+     
       <SocialProof/>
       <Quote/>
       <Milestones/>

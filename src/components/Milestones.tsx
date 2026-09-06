@@ -3,6 +3,7 @@
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import SectionHeading from "./shared/SectionHeading";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -171,36 +172,19 @@ export default function Milestones() {
         {/* =================================
             HEADER
         ================================= */}
-        <div ref={headingRef} className="mb-20">
-          <span
-            className="
-              mb-6
-              block
-              text-[20px]
-              font-semibold
-              uppercase
-              tracking-[-0.01em]
-              text-[#8A837A]
-            "
-          >
-            OUR JOURNEY
-          </span>
-
-          <h2
-            className="
-              w-full
-              text-[clamp(60px,8vw,110px)]
-              font-bold
-              uppercase
-              leading-[0.88]
-              tracking-[-0.055em]
-              text-[#171715]
-            "
-          >
-            A Legacy
-            <br />
-            Built Over Time
-          </h2>
+        <div  className="mb-20">
+          <SectionHeading
+          label="OUR JOURNEY
+"
+          heading={
+            <>
+              A Legacy
+<br/>
+Built Over Time 
+            </>
+          }
+         
+        />
         </div>
 
         {/* =================================
@@ -258,6 +242,8 @@ export default function Milestones() {
                 <div className="md:col-span-7">
                   <h3
                     className="
+                    font-serif
+                    uppercase
                       milestone-title
                       text-[clamp(25px,3vw,42px)]
                       font-semibold

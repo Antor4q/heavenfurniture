@@ -2,98 +2,43 @@
 
 import { useLayoutEffect, useRef } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+
 import AnimatedButton from "./shared/AnimatedButton";
+import SectionHeading from "./shared/SectionHeading";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const bespokeItems = [
   {
     text: "Every piece begins with your space, your lifestyle, and the way you actually live. We create furniture that feels naturally at home.",
-    image: "/heavenHero.jpg",
+    image: "/be1.jpg",
   },
   {
     text: "From material selection to the smallest detail, every element is thoughtfully considered to create furniture with character and purpose.",
-    image: "/heavenHero.jpg",
+    image: "/be2.png",
   },
   {
     text: "Timeless proportions, carefully selected materials, and refined craftsmanship come together to create pieces made for years of living.",
-    image: "/heavenHero.jpg",
+    image: "/be3.jpg",
   },
 ];
 
 export default function Bespoke() {
   const sectionRef = useRef<HTMLElement>(null);
-  const headingRef = useRef<HTMLDivElement>(null);
+  const textRefs = useRef<(HTMLParagraphElement | null)[]>([]);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       /* =================================
-         MAIN HEADING WORD REVEAL
-      ================================= */
-
-      const heading = headingRef.current;
-
-      if (!heading) return;
-
-      const headingWords =
-        heading.textContent?.trim().split(/\s+/) || [];
-
-      heading.innerHTML = "";
-
-      headingWords.forEach((word, index) => {
-        const span = document.createElement("span");
-
-        span.className =
-          "bespoke-heading-word inline-block will-change-transform";
-
-        span.textContent = word;
-
-        heading.appendChild(span);
-
-        if (index < headingWords.length - 1) {
-          heading.appendChild(document.createTextNode(" "));
-        }
-      });
-
-      const headingSpans =
-        heading.querySelectorAll<HTMLElement>(
-          ".bespoke-heading-word"
-        );
-
-      gsap.set(headingSpans, {
-        y: 60,
-        opacity: 0.08,
-      });
-
-      gsap.to(headingSpans, {
-        y: 0,
-        opacity: 1,
-        stagger: 0.045,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: heading,
-          start: "top 85%",
-          end: "top 35%",
-          scrub: 1,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      /* =================================
          BESPOKE TEXT WORD REVEAL
       ================================= */
 
-      const textBlocks =
-        gsap.utils.toArray<HTMLElement>(
-          ".bespoke-text"
-        );
+      textRefs.current.forEach((text) => {
+        if (!text) return;
 
-      textBlocks.forEach((text) => {
-        const words =
-          text.textContent?.trim().split(/\s+/) || [];
+        const words = text.textContent?.trim().split(/\s+/) || [];
 
         text.innerHTML = "";
 
@@ -108,21 +53,21 @@ export default function Bespoke() {
           text.appendChild(span);
 
           if (index < words.length - 1) {
-            text.appendChild(
-              document.createTextNode(" ")
-            );
+            text.appendChild(document.createTextNode(" "));
           }
         });
 
         const wordSpans =
-          text.querySelectorAll<HTMLElement>(
-            ".bespoke-word"
-          );
+          text.querySelectorAll<HTMLElement>(".bespoke-word");
+
+        /* Initial state */
 
         gsap.set(wordSpans, {
           y: 35,
           opacity: 0.12,
         });
+
+        /* Reveal on scroll */
 
         gsap.to(wordSpans, {
           y: 0,
@@ -144,9 +89,7 @@ export default function Bespoke() {
       ================================= */
 
       const images =
-        gsap.utils.toArray<HTMLElement>(
-          ".bespoke-image"
-        );
+        gsap.utils.toArray<HTMLElement>(".bespoke-image");
 
       images.forEach((image) => {
         gsap.fromTo(
@@ -168,6 +111,10 @@ export default function Bespoke() {
         );
       });
 
+      /* =================================
+         REFRESH
+      ================================= */
+
       requestAnimationFrame(() => {
         ScrollTrigger.refresh();
       });
@@ -178,6 +125,7 @@ export default function Bespoke() {
 
   return (
     <section
+    id="bespoke"
       ref={sectionRef}
       className="
         relative
@@ -194,40 +142,15 @@ export default function Bespoke() {
       ================================= */}
 
       <div className="mb-10 md:mb-16">
-        <span
-          className="
-            mb-6
-            block
-            text-[14px]
-            font-semibold
-            uppercase
-            tracking-[0.08em]
-            text-[#9B958C]
-            md:text-[16px]
-            lg:text-[18px]
-          "
-        >
-          BESPOKE LIVING
-        </span>
-
-        <h2
-          ref={headingRef}
-          className="
-            w-full
-            break-words
-            text-[clamp(38px,10vw,110px)]
-            font-bold
-            uppercase
-            leading-[0.95]
-            tracking-[-0.03em]
-            text-[#F7F5F1]
-            sm:leading-[0.9]
-            md:leading-[0.88]
-            md:tracking-[-0.055em]
-          "
-        >
-          Designed Around You
-        </h2>
+        <SectionHeading
+          label="Bespoke"
+          heading={
+            <>
+              Designed Around You
+            </>
+          }
+          headingColor="#F7F5F1"
+        />
       </div>
 
       {/* =================================
@@ -241,12 +164,12 @@ export default function Bespoke() {
           return (
             <div
               key={index}
-              className="
-                mb-32
-                last:mb-0
-                md:mb-44
-                lg:mb-52
-              "
+             className="
+  mb-20
+  last:mb-0
+  md:mb-28
+  lg:mb-32
+"
             >
               <div
                 className={`
@@ -265,7 +188,9 @@ export default function Bespoke() {
                   }
                 `}
               >
-                {/* IMAGE */}
+                {/* =================================
+                    IMAGE
+                ================================= */}
 
                 <div
                   className="
@@ -291,7 +216,11 @@ export default function Bespoke() {
                       src={item.image}
                       alt="Heaven bespoke furniture"
                       fill
-                      sizes="(max-width: 767px) 100vw, (max-width: 1023px) 42vw, 40vw"
+                      sizes="
+                        (max-width: 767px) 100vw,
+                        (max-width: 1023px) 42vw,
+                        40vw
+                      "
                       className="
                         bespoke-image
                         scale-[1.12]
@@ -302,7 +231,9 @@ export default function Bespoke() {
                   </div>
                 </div>
 
-                {/* TEXT */}
+                {/* =================================
+                    TEXT
+                ================================= */}
 
                 <div
                   className="
@@ -312,6 +243,9 @@ export default function Bespoke() {
                   "
                 >
                   <p
+                    ref={(el) => {
+                      textRefs.current[index] = el;
+                    }}
                     className="
                       bespoke-text
                       w-full
@@ -349,7 +283,10 @@ export default function Bespoke() {
           lg:mt-44
         "
       >
-        <AnimatedButton text="Request A Free Quote" href="/" />
+        <AnimatedButton
+          text="Request Free Quote"
+          href="/#contact"
+        />
       </div>
     </section>
   );
