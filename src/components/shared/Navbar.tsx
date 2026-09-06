@@ -15,15 +15,15 @@ const navItems = [
 const featuredProducts = [
   {
     name: "Aria Lounge Chair",
-    price: "৳ 42,500",
-    image: "/products/aria-lounge-chair.jpg",
-    href: "/products/aria-lounge-chair",
+    
+    image: "/fur1.jpg",
+    href: "/#collections",
   },
   {
     name: "Solstice Dining Table",
-    price: "৳ 1,18,000",
-    image: "/products/solstice-dining-table.jpg",
-    href: "/products/solstice-dining-table",
+  
+    image: "/fur2.jpg",
+    href: "/#collections",
   },
 ];
 

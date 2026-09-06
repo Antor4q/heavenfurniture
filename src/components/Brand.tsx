@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useLayoutEffect, useRef } from "react";
@@ -26,17 +27,33 @@ export default function Brand() {
       const imageWrap = imageWrapRef.current;
       const image = imageRef.current;
 
-      if (!section || !labelWrap || !label || !text || !imageWrap || !image) {
+      if (
+        !section ||
+        !labelWrap ||
+        !label ||
+        !text ||
+        !imageWrap ||
+        !image
+      ) {
         return;
       }
 
+      /* =====================================================
+         SPLIT TEXT INTO WORDS
+      ===================================================== */
+
       const words = text.textContent?.trim().split(/\s+/) || [];
+
       text.innerHTML = "";
 
       words.forEach((word, index) => {
         const span = document.createElement("span");
-        span.className = "brand-word inline-block will-change-transform";
+
+        span.className =
+          "brand-word inline-block will-change-transform";
+
         span.textContent = word;
+
         text.appendChild(span);
 
         if (index < words.length - 1) {
@@ -44,7 +61,8 @@ export default function Brand() {
         }
       });
 
-      const textWords = text.querySelectorAll<HTMLElement>(".brand-word");
+      const textWords =
+        text.querySelectorAll<HTMLElement>(".brand-word");
 
       const mm = gsap.matchMedia();
 
@@ -58,23 +76,51 @@ export default function Brand() {
             isMobile: boolean;
           };
 
-          const sectionShift = isMobile ? OVERLAP_PX * 0.4 : OVERLAP_PX;
+          /* =====================================================
+             RESPONSIVE VALUES
+          ===================================================== */
+
+          const sectionShift = isMobile
+            ? OVERLAP_PX * 0.4
+            : OVERLAP_PX;
+
           const labelParallax = isMobile ? -4 : -8;
           const textParallax = isMobile ? -8 : -18;
           const imageParallaxY = isMobile ? -12 : -35;
 
-          /* -------- INITIAL STATES -------- */
-          gsap.set(section, { marginBottom: -sectionShift });
-          gsap.set(labelWrap, { y: 30, opacity: 0 });
-          gsap.set(textWords, { y: 28, opacity: 0.12 });
+          /* =====================================================
+             INITIAL STATES
+          ===================================================== */
+
+          gsap.set(section, {
+            marginBottom: -sectionShift,
+          });
+
+          gsap.set(labelWrap, {
+            y: 30,
+            opacity: 0,
+          });
+
+          gsap.set(textWords, {
+            y: 28,
+            opacity: 0.12,
+          });
+
           gsap.set(image, {
             y: 70,
             opacity: 0,
             rotate: 12,
           });
-          gsap.set(imageWrap, { y: 0, rotate: 0 });
 
-          /* -------- SECTION OVERLAP SHIFT -------- */
+          gsap.set(imageWrap, {
+            y: 0,
+            rotate: 0,
+          });
+
+          /* =====================================================
+             SECTION OVERLAP SHIFT
+          ===================================================== */
+
           gsap.to(section, {
             y: -sectionShift,
             ease: "none",
@@ -87,7 +133,10 @@ export default function Brand() {
             },
           });
 
-          /* -------- LABEL: ENTRANCE (on inner labelWrap) -------- */
+          /* =====================================================
+             LABEL ENTRANCE
+          ===================================================== */
+
           gsap.to(labelWrap, {
             y: 0,
             opacity: 1,
@@ -100,7 +149,10 @@ export default function Brand() {
             },
           });
 
-          /* -------- LABEL: PARALLAX (on outer, no conflict) -------- */
+          /* =====================================================
+             LABEL PARALLAX
+          ===================================================== */
+
           gsap.to(label, {
             y: labelParallax,
             ease: "none",
@@ -113,7 +165,10 @@ export default function Brand() {
             },
           });
 
-          /* -------- TEXT WORDS: ENTRANCE -------- */
+          /* =====================================================
+             TEXT WORD ENTRANCE
+          ===================================================== */
+
           gsap.to(textWords, {
             y: 0,
             opacity: 1,
@@ -128,7 +183,10 @@ export default function Brand() {
             },
           });
 
-          /* -------- TEXT: PARALLAX (targets text itself — no conflict, words handle reveal) -------- */
+          /* =====================================================
+             TEXT PARALLAX
+          ===================================================== */
+
           gsap.to(text, {
             y: textParallax,
             ease: "none",
@@ -141,7 +199,10 @@ export default function Brand() {
             },
           });
 
-          /* -------- IMAGE: ENTRANCE (on inner image) -------- */
+          /* =====================================================
+             IMAGE ENTRANCE
+          ===================================================== */
+
           gsap.to(image, {
             y: 0,
             opacity: 1,
@@ -155,7 +216,10 @@ export default function Brand() {
             },
           });
 
-          /* -------- IMAGE: PARALLAX (on outer wrap — no conflict) -------- */
+          /* =====================================================
+             IMAGE PARALLAX
+          ===================================================== */
+
           gsap.to(imageWrap, {
             y: imageParallaxY,
             rotate: 4,
@@ -170,7 +234,7 @@ export default function Brand() {
           });
 
           return () => {
-            // matchMedia cleanup handled by gsap.context revert
+            // GSAP matchMedia cleanup
           };
         }
       );
@@ -187,7 +251,7 @@ export default function Brand() {
 
   return (
     <section
-    id="about"
+      id="about"
       ref={sectionRef}
       className="
         relative
@@ -196,14 +260,22 @@ export default function Brand() {
         bg-[#F7F5F1]
         px-6
         py-20
+
         md:px-12
         md:py-28
+
         lg:px-20
         lg:py-32
       "
     >
-    
-      <div ref={labelWrapRef} className="mb-5 md:mb-7">
+      {/* =====================================================
+          LABEL
+      ===================================================== */}
+
+      <div
+        ref={labelWrapRef}
+        className="mb-5 md:mb-7"
+      >
         <span
           ref={labelRef}
           className="
@@ -213,8 +285,11 @@ export default function Brand() {
             uppercase
             tracking-[0.08em]
             text-[#B79B67]
+
             sm:text-[14px]
+
             md:text-[16px]
+
             lg:text-[18px]
           "
         >
@@ -225,6 +300,7 @@ export default function Brand() {
       {/* =====================================================
           MAIN TEXT
       ===================================================== */}
+
       <p
         ref={textRef}
         className="
@@ -239,6 +315,7 @@ export default function Brand() {
           leading-[1.08]
           tracking-[-0.02em]
           text-[#171715]
+
           md:leading-[1.04]
           md:tracking-[-0.04em]
         "
@@ -250,21 +327,35 @@ export default function Brand() {
 
       {/* =====================================================
           IMAGE
-          Mobile: normal flow, centered, below text
-          md+: absolute, overlapping (original design)
-          Outer (imageWrap) = parallax animation
-          Inner (image) = entrance animation
+
+          Mobile:
+          - Normal flow
+          - Slightly overlaps text
+          - Centered
+
+          md+:
+          - Absolute
+          - Original overlapping layout
       ===================================================== */}
+
       <div
         ref={imageWrapRef}
         className="
           pointer-events-none
           relative
           z-30
-          mt-10
+
+          /* MOBILE IMAGE OVERLAP */
+          -mt-6
+
           flex
           w-full
           justify-center
+
+          /* SMALL MOBILE */
+          sm:-mt-8
+
+          /* TABLET / DESKTOP */
           md:absolute
           md:right-[8%]
           md:top-[30%]
@@ -272,6 +363,8 @@ export default function Brand() {
           md:block
           md:w-[330px]
           md:justify-start
+
+          /* LARGE DESKTOP */
           lg:right-[9%]
           lg:top-[27%]
           lg:w-[420px]
@@ -279,17 +372,26 @@ export default function Brand() {
       >
         <div
           ref={imageRef}
-          className="w-[180px] sm:w-[220px] md:w-full"
+          className="
+            w-[180px]
+            sm:w-[220px]
+            md:w-full
+          "
         >
           <Image
             src="/showroom.png"
             alt="Heaven furniture interior"
             width={900}
             height={600}
-            className="h-auto w-full object-cover"
+            className="
+              h-auto
+              w-full
+              object-cover
+            "
           />
         </div>
       </div>
     </section>
   );
 }
+

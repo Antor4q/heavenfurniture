@@ -351,26 +351,33 @@ export default function Footer() {
       ===================================================== */}
 
       <h1
-        ref={brandRef}
-        className="
-          mt-14
-          -mb-6
-          whitespace-nowrap
-          font-serif
-          text-[clamp(60px,24vw,430px)]
-          font-bold
-          uppercase
-          leading-[0.7]
-          tracking-normal
-          text-[#fff]
-          sm:mt-16
-          sm:-mb-10
-          lg:mt-20
-          lg:-mb-14
-        "
-      >
-        HEAVEN
-      </h1>
+     
+  ref={brandRef}
+  className="
+    mt-14
+    -mb-6
+    whitespace-nowrap
+    font-serif
+    text-[80px]
+    font-bold
+    uppercase
+    leading-[0.7]
+    tracking-normal
+    text-[#fff]
+
+    sm:text-[110px]
+    sm:mt-16
+    sm:-mb-10
+
+    md:text-[180px]
+
+    lg:mt-20
+    lg:-mb-14
+    lg:text-[clamp(180px,24vw,430px)]
+  "
+>
+  HEAVEN
+</h1>
     </div>
   );
 }

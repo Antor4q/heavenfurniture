@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -33,6 +34,10 @@ export default function FurnitureGallery({
   const startXRef = useRef(0);
   const startDragXRef = useRef(0);
 
+  /* =====================================================
+     AUTO SCROLL
+  ===================================================== */
+
   useEffect(() => {
     const track = trackRef.current;
 
@@ -66,7 +71,8 @@ export default function FurnitureGallery({
         xRef.current += firstSetWidth;
       }
 
-      track.style.transform = `translate3d(${xRef.current}px, 0, 0)`;
+      track.style.transform =
+        `translate3d(${xRef.current}px, 0, 0)`;
 
       animationFrame =
         requestAnimationFrame(animate);
@@ -79,6 +85,10 @@ export default function FurnitureGallery({
       cancelAnimationFrame(animationFrame);
     };
   }, []);
+
+  /* =====================================================
+     DRAG START
+  ===================================================== */
 
   const handlePointerDown = (
     e: React.PointerEvent<HTMLDivElement>
@@ -97,6 +107,10 @@ export default function FurnitureGallery({
     track.style.cursor = "grabbing";
   };
 
+  /* =====================================================
+     DRAG MOVE
+  ===================================================== */
+
   const handlePointerMove = (
     e: React.PointerEvent<HTMLDivElement>
   ) => {
@@ -109,6 +123,10 @@ export default function FurnitureGallery({
       startDragXRef.current + movement;
   };
 
+  /* =====================================================
+     DRAG END
+  ===================================================== */
+
   const handlePointerUp = (
     e: React.PointerEvent<HTMLDivElement>
   ) => {
@@ -118,7 +136,9 @@ export default function FurnitureGallery({
 
     draggingRef.current = false;
 
-    track.releasePointerCapture(e.pointerId);
+    if (track.hasPointerCapture(e.pointerId)) {
+      track.releasePointerCapture(e.pointerId);
+    }
 
     track.style.cursor = "grab";
   };
@@ -139,17 +159,21 @@ export default function FurnitureGallery({
         onPointerCancel={handlePointerUp}
         className="
           flex
-          w-full
+          w-max
           items-end
-          gap-3
-          px-4
+          gap-2
+          px-3
+
+          sm:gap-3
+          sm:px-4
+
           md:gap-4
           md:px-6
+
           lg:gap-5
           lg:px-10
         "
         style={{
-          width: "max-content",
           touchAction: "pan-y",
           willChange: "transform",
           cursor: "grab",
@@ -157,7 +181,9 @@ export default function FurnitureGallery({
       >
         {repeatedItems.map((item, index) => {
           const ratio =
-            imageRatios[index % imageRatios.length];
+            imageRatios[
+              index % imageRatios.length
+            ];
 
           return (
             <div
@@ -165,13 +191,35 @@ export default function FurnitureGallery({
               className="
                 group
                 shrink-0
+
+                /* ================================
+                   MOBILE → 3 ITEMS
+                ================================= */
+
+                w-[calc((100vw-24px-16px)/3)]
+
+                /* ================================
+                   SMALL → 3 ITEMS
+                ================================= */
+
+                sm:w-[calc((100vw-32px-36px)/3)]
+
+                /* ================================
+                   TABLET → 4 ITEMS
+                ================================= */
+
+                md:w-[calc((100vw-48px-48px)/4)]
+
+                /* ================================
+                   DESKTOP → 4 ITEMS
+                ================================= */
+
+                lg:w-[calc((100vw-80px-60px)/4)]
               "
-              style={{
-                width:
-                  "calc((100vw - 80px - 60px) / 4)",
-              }}
             >
-              {/* IMAGE */}
+              {/* =================================================
+                  IMAGE
+              ================================================= */}
 
               <div
                 className={`
@@ -183,6 +231,7 @@ export default function FurnitureGallery({
                   duration-500
                   ease-out
                   group-hover:scale-[1.035]
+
                   ${
                     ratio === "portrait"
                       ? "aspect-[4/5]"
@@ -195,7 +244,10 @@ export default function FurnitureGallery({
                   alt={item.text}
                   fill
                   draggable={false}
-                  sizes="25vw"
+                  sizes="
+                    (max-width: 767px) 33vw,
+                    25vw
+                  "
                   className="
                     pointer-events-none
                     select-none
@@ -204,17 +256,23 @@ export default function FurnitureGallery({
                 />
               </div>
 
-              {/* LABEL */}
+              {/* =================================================
+                  LABEL
+              ================================================= */}
 
               <div className="mt-3">
                 <span
                   className="
-                    text-[10px]
+                    text-[9px]
                     font-medium
                     uppercase
-                    tracking-[0.12em]
+                    tracking-[0.1em]
                     text-[#171715]
+
+                    sm:text-[10px]
+
                     md:text-[11px]
+                    md:tracking-[0.12em]
                   "
                 >
                   {item.text}
@@ -227,3 +285,4 @@ export default function FurnitureGallery({
     </div>
   );
 }
+
